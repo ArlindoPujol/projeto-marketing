@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useFarmacia } from '@/contexts/FarmaciaContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useState, useEffect } from 'react';
-import { Moon, Sun, Store, LayoutDashboard, CheckSquare, Calendar, ChevronDown, Search } from 'lucide-react';
+import { Moon, Sun, Store, LayoutDashboard, CheckSquare, Calendar, ChevronDown, Search, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SearchModal, useSearchModal } from './SearchModal';
 
@@ -32,136 +32,84 @@ export default function Topbar() {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
+    // Get current page label for breadcrumbs
+    const currentLink = links.find(l => pathname === l.href || (l.href !== '/' && pathname.startsWith(l.href)));
+
     return (
         <>
             <header className={cn(
-                'fixed top-0 inset-x-0 z-50 transition-all duration-500',
-                scrolled
-                    ? [
-                        'py-2 px-6',
-                        'bg-white/75 dark:bg-[#1C1C1E]/80',
-                        'backdrop-blur-2xl',
-                        'border-b border-black/[0.07] dark:border-white/[0.08]',
-                        'shadow-[0_1px_0_0_rgba(255,255,255,0.9)_inset] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset]',
-                    ].join(' ')
-                    : 'py-4 px-6 bg-transparent',
+                'fixed top-0 left-72 right-0 z-40 transition-all duration-500 py-6 px-10',
+                scrolled && 'backdrop-blur-xl bg-background/40 border-b border-white/5 py-4'
             )}>
-                <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+                <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-8">
 
-                    {/* ── Logo ── */}
-                    <Link href="/" className="flex items-center shrink-0">
-                        <img
-                            src={theme === 'light' ? '/logo-light.png' : '/logo-dark.png'}
-                            alt="Farmácia10x"
-                            className="h-7 w-auto object-contain transition-opacity hover:opacity-75"
-                        />
-                    </Link>
+                    {/* ── Breadcrumbs / Title ── */}
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 text-foreground/40 text-[11px] font-bold uppercase tracking-widest">
+                            <Home className="h-3.5 w-3.5" />
+                            <span>/</span>
+                            <span className="text-foreground/80">{currentLink?.label || 'Dashboard'}</span>
+                        </div>
+                    </div>
 
-                    {/* ── Nav pill central ── */}
-                    <nav className={cn(
-                        'flex items-center p-1 rounded-2xl border transition-all duration-500',
-                        'bg-black/[0.032] border-black/[0.060]',
-                        'dark:bg-white/[0.055] dark:border-white/[0.085]',
-                    )}>
-                        {links.map(link => {
-                            const isActive = pathname === link.href ||
-                                (link.href !== '/' && pathname.startsWith(link.href));
-                            return (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className={cn(
-                                        'relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[11px] font-semibold transition-all duration-250',
-                                        'uppercase tracking-[0.06em]',
-                                        isActive
-                                            ? [
-                                                'bg-white text-[#1C1C1E] shadow-[0_1px_3px_rgba(0,0,0,0.10),0_0_0_0.5px_rgba(0,0,0,0.06)]',
-                                                'dark:bg-white/[0.13] dark:text-white dark:shadow-[0_1px_3px_rgba(0,0,0,0.40),0_0_0_0.5px_rgba(255,255,255,0.10)]',
-                                            ].join(' ')
-                                            : [
-                                                'text-[#636366] hover:text-[#1C1C1E] hover:bg-black/[0.03]',
-                                                'dark:text-[#8E8E93] dark:hover:text-white dark:hover:bg-white/[0.07]',
-                                            ].join(' '),
-                                    )}
-                                >
-                                    <link.icon className={cn(
-                                        'h-3 w-3 transition-colors',
-                                        isActive ? 'text-[#0071E3] dark:text-[#0A84FF]' : 'opacity-50',
-                                    )} />
-                                    {link.label}
-                                </Link>
-                            );
-                        })}
+                    {/* ── Central / Right Actions ── */}
+                    <div className="flex items-center gap-4">
 
-                        <div className="h-4 w-px mx-1 bg-black/[0.08] dark:bg-white/[0.10]" />
-
-                        {/* Seletor de unidade */}
-                        <div className="relative flex items-center gap-1.5 pl-2 pr-1">
-                            <Store className="h-3 w-3 text-[#0071E3] dark:text-[#0A84FF] shrink-0" />
+                        {/* Seletor de unidade Premium */}
+                        <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/40 transition-all group">
+                            <Store className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
                             <select
                                 value={selectedFarmaciaId}
                                 onChange={e => setSelectedFarmaciaId(e.target.value)}
-                                className={cn(
-                                    'appearance-none bg-transparent border-none outline-none cursor-pointer pr-4',
-                                    'text-[11px] font-semibold uppercase tracking-[0.06em]',
-                                    'text-[#1C1C1E]/70 dark:text-white/70',
-                                    'hover:text-[#1C1C1E] dark:hover:text-white',
-                                    'transition-colors max-w-[160px] truncate focus:ring-0',
-                                )}
+                                className="appearance-none bg-transparent border-none outline-none cursor-pointer text-[12px] font-black uppercase tracking-wider pr-4 focus:ring-0"
                             >
-                                <option value="global" className="bg-white dark:bg-[#1C1C1E]">Rede Global</option>
+                                <option value="global" className="bg-[#0F121D]">Rede Global</option>
                                 {farmacias.map(f => (
-                                    <option key={f.id} value={f.id} className="bg-white dark:bg-[#1C1C1E]">{f.nomeFarmacia}</option>
+                                    <option key={f.id} value={f.id} className="bg-[#0F121D]">{f.nomeFarmacia}</option>
                                 ))}
                             </select>
-                            <ChevronDown className="h-2.5 w-2.5 text-[#8E8E93] pointer-events-none absolute right-1" />
+                            <ChevronDown className="h-3 w-3 opacity-30" />
                         </div>
-                    </nav>
 
-                    {/* ── Ações ── */}
-                    <div className="flex items-center gap-2 shrink-0">
+                        <div className="h-6 w-px bg-white/10 mx-2" />
 
-                        {/* Botão busca */}
+                        {/* Busca */}
                         <button
                             onClick={() => setSearchOpen(true)}
-                            aria-label="Busca global (Ctrl+K)"
-                            className={cn(
-                                'flex items-center gap-2 h-8 pl-3 pr-2 rounded-xl border transition-all duration-300',
-                                'bg-black/[0.032] border-black/[0.060]',
-                                'text-[#636366] hover:text-[#1C1C1E] hover:bg-black/[0.06]',
-                                'dark:bg-white/[0.055] dark:border-white/[0.085]',
-                                'dark:text-[#8E8E93] dark:hover:text-white dark:hover:bg-white/[0.09]',
-                                'active:scale-95',
-                            )}
+                            className="w-11 h-11 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10 hover:border-primary/40 hover:bg-primary/5 transition-all active:scale-90 shadow-lg"
                         >
-                            <Search className="h-3.5 w-3.5" />
-                            <kbd className="hidden sm:block text-[10px] font-semibold opacity-50">⌃K</kbd>
+                            <Search className="h-4.5 w-4.5 text-foreground/60" />
                         </button>
 
-                        {/* Toggle tema */}
+                        {/* Tema */}
                         <button
                             onClick={toggleTheme}
-                            aria-label="Alternar tema"
-                            className={cn(
-                                'h-8 w-8 rounded-xl flex items-center justify-center border transition-all duration-300',
-                                'bg-black/[0.032] border-black/[0.060]',
-                                'text-[#636366] hover:text-[#1C1C1E] hover:bg-black/[0.06]',
-                                'dark:bg-white/[0.055] dark:border-white/[0.085]',
-                                'dark:text-[#8E8E93] dark:hover:text-[#FFD60A] dark:hover:bg-white/[0.09]',
-                                'active:scale-90',
-                            )}
+                            className="w-11 h-11 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10 hover:border-amber-400/40 hover:bg-amber-400/5 transition-all active:scale-90 shadow-lg"
                         >
                             {theme === 'light'
-                                ? <Moon className="h-3.5 w-3.5" />
-                                : <Sun className="h-3.5 w-3.5 text-[#FFD60A]" />
+                                ? <Moon className="h-4.5 w-4.5 text-foreground/60" />
+                                : <Sun className="h-4.5 w-4.5 text-amber-400" />
                             }
                         </button>
+
+                        {/* User Profile Placeholder matching Reference */}
+                        <div className="flex items-center gap-3 pl-2">
+                            <div className="flex flex-col items-end hidden sm:flex">
+                                <span className="text-[11px] font-black tracking-tight">Arlindo Pujol</span>
+                                <span className="text-[9px] font-bold text-primary uppercase tracking-widest">Admin</span>
+                            </div>
+                            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-primary to-purple-600 p-0.5 shadow-lg shadow-primary/10 transition-transform hover:scale-105 cursor-pointer">
+                                <div className="w-full h-full rounded-[14px] bg-background flex items-center justify-center overflow-hidden">
+                                    <img src="https://ui-avatars.com/api/?name=Arlindo+Pujol&background=random" alt="User" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            {/* ── Modal de Busca Global ── */}
             <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
         </>
     );
 }
+

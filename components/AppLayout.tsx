@@ -5,8 +5,7 @@ import { FarmaciaProvider } from '@/contexts/FarmaciaContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ToastProvider } from '@/contexts/ToastContext';
 import { ConfirmProvider } from '@/contexts/ConfirmContext';
-import Topbar from './Topbar';
-import { cn } from '@/lib/utils';
+import Sidebar from './Sidebar';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -14,56 +13,67 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <ThemeProvider>
                 <ToastProvider>
                     <ConfirmProvider>
-                        <div className="flex flex-col min-h-screen bg-background text-foreground font-sans antialiased selection:bg-blue-500/15 transition-all duration-700">
+                        <div className="flex min-h-screen bg-background text-foreground font-sans antialiased selection:bg-primary/20 transition-all duration-700">
 
-                            {/* ── Camada de fundo decorativa — Apple-style ── */}
+                            {/* ── BACKGROUND LAYER (Premium Depth) ── */}
                             <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-
-                                {/* Light: fundo puro, sem ruído — Apple usa F2F2F7 clean */}
-                                {/* Dark: blobs de vibrância suave como no macOS */}
-                                <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full blur-[140px]
-                            opacity-0 dark:opacity-100
-                            bg-[#0071E3]/[0.07]
-                            transition-all duration-1000" />
-                                <div className="absolute bottom-[-20%] right-[-10%] w-[55%] h-[55%] rounded-full blur-[130px]
-                            opacity-0 dark:opacity-100
-                            bg-[#5E5CE6]/[0.06]
-                            transition-all duration-1000" />
-                                <div className="absolute top-[35%] right-[15%] w-[35%] h-[35%] rounded-full blur-[110px]
-                            opacity-0 dark:opacity-100
-                            bg-[#0A84FF]/[0.04]
+                                {/* Radiant Midnight Blobs */}
+                                <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] rounded-full blur-[120px]
+                            opacity-0 dark:opacity-[0.15]
+                            bg-primary
+                            animate-glow transition-all duration-1000" />
+                                
+                                <div className="absolute bottom-[0%] right-[-10%] w-[45%] h-[45%] rounded-full blur-[130px]
+                            opacity-0 dark:opacity-[0.12]
+                            bg-purple-600
                             transition-all duration-1000" />
 
-                                {/* Grid de pontos ultra-sutil — dark only */}
-                                <div className="absolute inset-0 opacity-0 dark:opacity-100 transition-opacity duration-700"
+                                <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] rounded-full blur-[100px]
+                            opacity-0 dark:opacity-[0.08]
+                            bg-cyan-500
+                            transition-all duration-1000" />
+
+                                {/* Subtle Dot Grid Pattern */}
+                                <div className="absolute inset-0 opacity-0 dark:opacity-[0.15] transition-opacity duration-700"
                                     style={{
-                                        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.028) 1px, transparent 1px)',
-                                        backgroundSize: '36px 36px',
+                                        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1.5px)',
+                                        backgroundSize: '40px 40px',
+                                    }}
+                                />
+                                
+                                {/* Noise Overlayer for texture */}
+                                <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03] pointer-events-none mix-blend-overlay"
+                                    style={{
+                                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
                                     }}
                                 />
                             </div>
 
-                            {/* Topbar */}
-                            <Topbar />
+                            {/* Sidebar - Fixado à esquerda */}
+                            <Sidebar />
 
-                            {/* Conteúdo */}
-                            <main className="flex-1 w-full max-w-7xl mx-auto px-6 pt-32 pb-20 relative z-10 transition-all duration-500">
-                                {children}
-                            </main>
+                            {/* Main Content Area */}
+                            <div className="flex-1 flex flex-col pl-72 relative z-10 transition-all duration-500">
+                                {/* Topbar can be inside here if needed */}
+                                <Topbar />
 
-                            {/* Footer */}
-                            <footer className="w-full py-10 border-t border-black/[0.04] dark:border-white/[0.06] relative z-10">
-                                <div className="max-w-7xl mx-auto px-6 flex justify-between items-center opacity-40 hover:opacity-100 transition-opacity duration-500">
-                                    <img
-                                        src="/logo-light.png"
-                                        alt="Farmácia10x"
-                                        className="h-4 w-auto grayscale contrast-125 dark:invert dark:brightness-150"
-                                    />
-                                    <span className="text-[9px] font-medium tracking-tight text-gray-500 dark:text-gray-400">
-                                        © 2026 Plataforma de Inteligência em Marketing. Todos os direitos reservados.
-                                    </span>
-                                </div>
-                            </footer>
+                                <main className="flex-1 w-full max-w-[1600px] mx-auto px-8 pt-32 pb-20 overflow-visible">
+                                    {children}
+                                </main>
+
+                                {/* Footer integrated into main scroll */}
+                                <footer className="w-full py-10 border-t border-black/[0.04] dark:border-white/[0.06]">
+                                    <div className="max-w-7xl mx-auto px-6 flex justify-between items-center opacity-30 hover:opacity-100 transition-opacity duration-500">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                            <span className="text-[10px] font-bold tracking-widest uppercase">System Online</span>
+                                        </div>
+                                        <span className="text-[9px] font-medium tracking-tight text-gray-400">
+                                            © 2026 Inteligência em Marketing · Farmácia10x
+                                        </span>
+                                    </div>
+                                </footer>
+                            </div>
                         </div>
                     </ConfirmProvider>
                 </ToastProvider>
@@ -71,3 +81,4 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </FarmaciaProvider>
     );
 }
+

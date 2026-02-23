@@ -63,42 +63,37 @@ function StatCard({ label, value, sub, icon: Icon, color, href }: {
 }) {
   const inner = (
     <div className={cn(
-      'group relative overflow-hidden transition-all duration-300',
-      'bg-white dark:bg-[#1C1C1E] rounded-[24px] p-5',
-      'border border-black/[0.04] dark:border-white/[0.06]',
-      'hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)]',
-      'hover:-translate-y-1',
+      'glass-card group p-6 flex flex-col justify-between min-h-[160px]',
       href && 'cursor-pointer'
     )}>
-      {/* Glow Effect */}
+      {/* Background Accent Glow */}
       <div className={cn(
-        'absolute -top-12 -right-12 w-32 h-32 rounded-full blur-[60px] opacity-[0.08] transition-opacity group-hover:opacity-[0.12]',
+        'absolute -top-12 -right-12 w-32 h-32 rounded-full blur-[60px] opacity-[0.15] transition-opacity group-hover:opacity-[0.25]',
         color
       )} />
 
-      <div className="relative z-10 flex flex-col h-full justify-between gap-4">
+      <div className="relative z-10 flex flex-col h-full justify-between gap-6">
         <div className="flex items-center justify-between">
           <div className={cn(
-            'flex items-center justify-center w-10 h-10 rounded-2xl border transition-all duration-500',
-            'bg-black/[0.02] border-black/[0.04] dark:bg-white/[0.04] dark:border-white/[0.06]',
-            'group-hover:scale-110 group-hover:rotate-3'
+            'flex items-center justify-center w-12 h-12 rounded-2xl border transition-all duration-500',
+            'bg-white/5 border-white/10 group-hover:scale-110 group-hover:rotate-3 group-hover:border-primary/50'
           )}>
-            <Icon className={cn('h-5 w-5', color.replace('bg-', 'text-'))} />
+            <Icon className={cn('h-6 w-6', color.replace('bg-', 'text-'))} />
           </div>
           {href && (
-            <div className="w-6 h-6 rounded-full flex items-center justify-center bg-black/[0.03] dark:bg-white/[0.05] opacity-0 group-hover:opacity-100 transition-all">
-              <ArrowRight className="h-3 w-3 text-[#8E8E93]" />
+            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 opacity-0 group-hover:opacity-100 transition-all">
+              <ArrowRight className="h-4 w-4 text-primary" />
             </div>
           )}
         </div>
 
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#8E8E93] mb-1">{label}</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 mb-1.5">{label}</p>
           <div className="flex items-baseline gap-2">
-            <h4 className="text-[34px] font-black tracking-tight text-[#1C1C1E] dark:text-white tabular-nums leading-none">
+            <h4 className="text-[32px] font-black tracking-tight tabular-nums leading-none">
               {value}
             </h4>
-            {sub && <span className="text-[11px] font-bold text-[#8E8E93]">{sub}</span>}
+            {sub && <span className="text-[11px] font-bold text-foreground/30">{sub}</span>}
           </div>
         </div>
       </div>
@@ -111,24 +106,25 @@ function SectionHeader({ icon: Icon, color, title, sub, action, actionHref }: {
   icon: any; color: string; title: string; sub?: string; action?: string; actionHref?: string;
 }) {
   return (
-    <div className="px-6 py-5 border-b border-black/[0.04] dark:border-white/[0.06] flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <div className={cn('p-2 rounded-xl bg-opacity-10', color.replace('text-', 'bg-'))}>
-          <Icon className={cn('h-4 w-4', color)} />
+    <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+      <div className="flex items-center gap-4">
+        <div className={cn('p-2.5 rounded-2xl bg-opacity-10 shadow-lg', color.replace('text-', 'bg-'))}>
+          <Icon className={cn('h-5 w-5', color)} />
         </div>
         <div>
-          <h3 className="text-[13px] font-black uppercase tracking-[0.08em] text-[#1C1C1E] dark:text-white">{title}</h3>
-          {sub && <p className="text-[10px] font-bold text-[#8E8E93] uppercase tracking-widest mt-0.5">{sub}</p>}
+          <h3 className="text-[14px] font-black uppercase tracking-[0.15em]">{title}</h3>
+          {sub && <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mt-1">{sub}</p>}
         </div>
       </div>
       {action && actionHref && (
-        <Link href={actionHref} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider text-[#0071E3] dark:text-[#0A84FF] bg-[#0071E3]/5 dark:bg-[#0A84FF]/10 hover:opacity-70 transition-all">
+        <Link href={actionHref} className="btn-premium py-2 px-4 shadow-none text-[10px] tracking-widest uppercase">
           {action}
         </Link>
       )}
     </div>
   );
 }
+
 
 /* ── Página principal ────────────────────────────────── */
 export default function Dashboard() {
@@ -271,18 +267,18 @@ export default function Dashboard() {
       <div className="grid gap-6 lg:grid-cols-12">
 
         {/* Radar de Monitoramento */}
-        <div className="lg:col-span-8 bg-white dark:bg-[#1C1C1E] rounded-[32px] border border-black/[0.04] dark:border-white/[0.06] overflow-hidden shadow-sm">
+        <div className="lg:col-span-8 glass-card border-none shadow-none">
           <SectionHeader
-            icon={Target} color="text-blue-500"
+            icon={Target} color="text-primary"
             title="Radar de Performance" sub="Atividades por unidade"
             action="Configurações" actionHref="/farmacias"
           />
 
-          <div className="divide-y divide-black/[0.04] dark:divide-white/[0.06]">
+          <div className="divide-y divide-white/5">
             {data.farmaciasRows.length === 0 ? (
               <div className="py-20 text-center">
-                <Store className="h-10 w-10 mx-auto text-gray-200 mb-4" />
-                <p className="text-[13px] font-bold text-gray-400 uppercase tracking-widest">Nenhuma unidade cadastrada</p>
+                <Store className="h-10 w-10 mx-auto text-foreground/10 mb-4" />
+                <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em]">Nenhuma unidade cadastrada</p>
               </div>
             ) : (
               data.farmaciasRows.map(f => {
@@ -290,34 +286,34 @@ export default function Dashboard() {
                 const st = statusConfig[f.statusMarketing] ?? statusConfig['paused'];
 
                 return (
-                  <Link key={f.id} href={`/farmacias/${f.id}`} className="flex items-center gap-6 px-6 py-5 hover:bg-black/[0.015] dark:hover:bg-white/[0.02] transition-colors group">
-                    <div className={cn('h-2.5 w-2.5 rounded-full shrink-0 ring-4 ring-opacity-20', st.dot, st.color.replace('text-', 'ring-'))} />
+                  <Link key={f.id} href={`/farmacias/${f.id}`} className="flex items-center gap-6 px-8 py-6 hover:bg-white/[0.03] transition-colors group">
+                    <div className={cn('h-3 w-3 rounded-full shrink-0 ring-4 ring-opacity-20', st.dot, st.color.replace('text-', 'ring-'))} />
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-[15px] font-bold text-[#1C1C1E] dark:text-white tracking-tight truncate">{f.nomeFarmacia}</span>
+                      <div className="flex items-center gap-4 mb-3">
+                        <span className="text-[15px] font-extrabold tracking-tight truncate">{f.nomeFarmacia}</span>
                         {f.overdueTasks > 0 && (
-                          <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-red-400/10 text-red-500 border border-red-500/10 uppercase tracking-wider">
+                          <span className="text-[9px] font-black px-2.5 py-1 rounded-lg bg-red-500/10 text-red-400 border border-red-500/10 uppercase tracking-widest">
                             {f.overdueTasks} Alerta{f.overdueTasks > 1 ? 's' : ''}
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="flex-1 h-1.5 bg-black/[0.05] dark:bg-white/[0.08] rounded-full overflow-hidden">
-                          <div className={cn('h-full rounded-full transition-all duration-1000 ease-out', f.overdueTasks > 0 ? 'bg-red-400' : 'bg-[#0071E3]')} style={{ width: `${pct}%` }} />
+                      <div className="flex items-center gap-6">
+                        <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                          <div className={cn('h-full rounded-full transition-all duration-1000 ease-out', f.overdueTasks > 0 ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'bg-primary shadow-[0_0_10px_rgba(62,123,255,0.3)]')} style={{ width: `${pct}%` }} />
                         </div>
-                        <span className="text-[11px] font-black text-[#8E8E93] tabular-nums w-8">{pct}%</span>
+                        <span className="text-[11px] font-black text-foreground/40 tabular-nums w-8">{pct}%</span>
                       </div>
                     </div>
 
-                    <div className="hidden md:flex flex-col items-end gap-1">
-                      <p className="text-[10px] font-black text-[#8E8E93] uppercase tracking-widest">Pé na estrada</p>
-                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#1C1C1E] dark:text-white uppercase tracking-wider">
+                    <div className="hidden md:flex flex-col items-end gap-1.5">
+                      <p className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.2em]">Pé na estrada</p>
+                      <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest">
                         <MapPin className="h-3 w-3 opacity-30" /> {f.cidade || '—'}
                       </div>
                     </div>
 
-                    <ChevronRight className="h-4 w-4 text-[#D1D1D6] opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />
+                    <ChevronRight className="h-4 w-4 text-foreground/20 group-hover:text-primary transition-all group-hover:translate-x-1" />
                   </Link>
                 )
               })
@@ -329,23 +325,23 @@ export default function Dashboard() {
         <div className="lg:col-span-4 space-y-6">
 
           {/* Urgências */}
-          <div className="bg-white dark:bg-[#1C1C1E] rounded-[32px] border border-black/[0.04] dark:border-white/[0.06] overflow-hidden shadow-sm">
-            <SectionHeader icon={Zap} color="text-amber-500" title="Alta Prioridade" sub="Resolver agora" action="Expandir" actionHref="/tarefas" />
-            <div className="p-2">
+          <div className="glass-card border-none">
+            <SectionHeader icon={Zap} color="text-amber-400" title="Alta Prioridade" sub="Resolver agora" action="Expandir" actionHref="/tarefas" />
+            <div className="p-4 space-y-2">
               {data.urgentTasks.length === 0 ? (
                 <div className="py-10 text-center opacity-40">
-                  <CheckCircle2 className="h-8 w-8 mx-auto mb-2 text-[#34C759]" />
-                  <p className="text-[10px] font-black uppercase tracking-widest">Operação Limpa</p>
+                  <CheckCircle2 className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em]">Operação Limpa</p>
                 </div>
               ) : (
                 data.urgentTasks.map(t => (
-                  <Link key={t.id} href={`/tarefas`} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-all group">
-                    <div className={cn('h-1.5 w-1.5 rounded-full shrink-0', new Date(t.vencimento!) < today ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'bg-amber-400')} />
+                  <Link key={t.id} href={`/tarefas`} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/[0.04] transition-all group border border-transparent hover:border-white/5">
+                    <div className={cn('h-2 w-2 rounded-full shrink-0', new Date(t.vencimento!) < today ? 'bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.6)]' : 'bg-amber-400')} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-bold text-[#1C1C1E] dark:text-white truncate group-hover:text-[#0071E3] transition-colors">{t.titulo}</p>
-                      <p className="text-[9px] font-bold text-[#8E8E93] uppercase tracking-widest mt-0.5 truncate">{t.farmaciaNome}</p>
+                      <p className="text-[12px] font-bold truncate group-hover:text-primary transition-colors">{t.titulo}</p>
+                      <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.15em] mt-1 truncate">{t.farmaciaNome}</p>
                     </div>
-                    <span className={cn('text-[10px] font-black tabular-nums whitespace-nowrap', new Date(t.vencimento!) < today ? 'text-red-500' : 'text-amber-600')}>{relativeDay(t.vencimento!)}</span>
+                    <span className={cn('text-[10px] font-black tabular-nums whitespace-nowrap', new Date(t.vencimento!) < today ? 'text-red-400' : 'text-amber-400')}>{relativeDay(t.vencimento!)}</span>
                   </Link>
                 ))
               )}
@@ -353,27 +349,27 @@ export default function Dashboard() {
           </div>
 
           {/* Agenda Curta */}
-          <div className="bg-white dark:bg-[#1C1C1E] rounded-[32px] border border-black/[0.04] dark:border-white/[0.06] overflow-hidden shadow-sm">
-            <SectionHeader icon={Users} color="text-purple-500" title="Próximas Reuniões" sub="Timeline de contato" action="Agenda" actionHref="/reunioes" />
-            <div className="p-3 space-y-2">
+          <div className="glass-card border-none">
+            <SectionHeader icon={Users} color="text-purple-400" title="Próximas Reuniões" sub="Timeline de contato" action="Agenda" actionHref="/reunioes" />
+            <div className="p-4 space-y-3">
               {data.nextMeetings.length === 0 ? (
-                <div className="py-10 text-center opacity-30 font-black text-[10px] uppercase tracking-[0.2em]">Agenda vazia</div>
+                <div className="py-10 text-center opacity-20 font-black text-[10px] uppercase tracking-[0.2em]">Agenda vazia</div>
               ) : (
                 data.nextMeetings.map(m => {
                   const d = new Date(m.data + 'T12:00:00');
                   const isHoje = d.toDateString() === new Date().toDateString();
                   return (
-                    <div key={m.id} className="flex items-center gap-4 p-3 rounded-[20px] bg-black/[0.015] dark:bg-white/[0.02] border border-transparent hover:border-purple-500/10 transition-all">
+                    <div key={m.id} className="flex items-center gap-5 p-4 rounded-[24px] bg-white/[0.03] border border-white/5 hover:border-purple-500/20 transition-all group">
                       <div className={cn(
-                        'flex flex-col items-center justify-center w-11 h-11 rounded-2xl border shrink-0',
-                        isHoje ? 'bg-[#AF52DE] border-[#AF52DE] text-white shadow-lg shadow-purple-500/20' : 'bg-white dark:bg-[#2C2C2E] border-black/[0.05] dark:border-white/[0.08]'
+                        'flex flex-col items-center justify-center w-12 h-12 rounded-2xl border shrink-0 transition-transform group-hover:scale-105',
+                        isHoje ? 'bg-purple-600 border-purple-400 text-white shadow-lg shadow-purple-600/30' : 'bg-white/5 border-white/10'
                       )}>
-                        <span className="text-[14px] font-black leading-none">{d.getDate()}</span>
-                        <span className="text-[7px] font-black uppercase tracking-tighter mt-1 opacity-60">{d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>
+                        <span className="text-[15px] font-black leading-none">{d.getDate()}</span>
+                        <span className="text-[8px] font-black uppercase tracking-tighter mt-1 opacity-60">{d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-bold text-[#1C1C1E] dark:text-white truncate">{m.pauta || 'Reunião de Alinhamento'}</p>
-                        <p className="text-[9px] font-bold text-[#8E8E93] uppercase tracking-widest mt-0.5 truncate">{m.farmaciaNome}</p>
+                        <p className="text-[12px] font-extrabold truncate">{m.pauta || 'Reunião de Alinhamento'}</p>
+                        <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.15em] mt-1 truncate">{m.farmaciaNome}</p>
                       </div>
                     </div>
                   )
@@ -386,52 +382,59 @@ export default function Dashboard() {
 
       {/* ── Seção de Insights ── */}
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="bg-white dark:bg-[#1C1C1E] rounded-[32px] p-8 border border-black/[0.04] dark:border-white/[0.06] shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2.5 rounded-2xl bg-orange-500/10 text-orange-500">
-              <ClipboardList className="h-5 w-5" />
+        <div className="glass-card border-none p-10">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="p-3 rounded-2xl bg-orange-500/10 text-orange-400 shadow-lg">
+              <ClipboardList className="h-6 w-6" />
             </div>
-            <h3 className="text-[17px] font-black tracking-tight">Oportunidades de Foco</h3>
+            <div>
+              <h3 className="text-[18px] font-black tracking-tight">Oportunidades de Foco</h3>
+              <p className="text-[10px] font-bold text-foreground/30 uppercase tracking-widest mt-1">Análise Proativa</p>
+            </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {data.semAtencao.length > 0 ? (
               <>
-                <p className="text-[13px] text-[#636366] dark:text-[#8E8E93] leading-relaxed">As seguintes unidades estão sem tarefas pendentes. Talvez seja hora de propor um novo projeto ou ação:</p>
-                <div className="flex flex-wrap gap-2 pt-2">
+                <p className="text-[13px] text-foreground/60 leading-relaxed font-medium">As seguintes unidades estão sem tarefas pendentes. Talvez seja hora de propor um novo projeto ou ação estratégica:</p>
+                <div className="flex flex-wrap gap-2.5 pt-2">
                   {data.semAtencao.map(nome => (
-                    <span key={nome} className="px-3 py-1.5 rounded-xl bg-orange-500/5 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-wider border border-orange-500/10">{nome}</span>
+                    <span key={nome} className="px-4 py-2 rounded-xl bg-orange-500/5 text-orange-400 text-[10px] font-black uppercase tracking-[0.15em] border border-orange-500/10">{nome}</span>
                   ))}
                 </div>
               </>
             ) : (
-              <p className="text-[13px] text-[#34C759] font-bold">Todas as unidades possuem atividades em andamento. Ótima gestão! ✅</p>
+              <p className="text-[13px] text-emerald-400 font-black uppercase tracking-widest">Todas as unidades possuem atividades em andamento. ✅</p>
             )}
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#1C1C1E] rounded-[32px] p-8 border border-black/[0.04] dark:border-white/[0.06] shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2.5 rounded-2xl bg-[#0071E3]/10 text-[#0071E3]">
-              <TrendingUp className="h-5 w-5" />
+        <div className="glass-card border-none p-10">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="p-3 rounded-2xl bg-primary/10 text-primary shadow-lg">
+              <TrendingUp className="h-6 w-6" />
             </div>
-            <h3 className="text-[17px] font-black tracking-tight">Análise de Relacionamento</h3>
+            <div>
+              <h3 className="text-[18px] font-black tracking-tight">Análise de Relacionamento</h3>
+              <p className="text-[10px] font-bold text-foreground/30 uppercase tracking-widest mt-1">Gestão de Contato</p>
+            </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {data.semReuniao30d.length > 0 ? (
               <>
-                <p className="text-[13px] text-[#636366] dark:text-[#8E8E93] leading-relaxed">Não detectamos reuniões nos últimos 30 dias para estas unidades. Um contato proativo pode evitar o churn:</p>
-                <div className="flex flex-wrap gap-2 pt-2">
+                <p className="text-[13px] text-foreground/60 leading-relaxed font-medium">Não detectamos reuniões nos últimos 30 dias para estas unidades. Um contato proativo pode fortalecer a parceria:</p>
+                <div className="flex flex-wrap gap-2.5 pt-2">
                   {data.semReuniao30d.map(nome => (
-                    <span key={nome} className="px-3 py-1.5 rounded-xl bg-[#0071E3]/5 text-[#0071E3] dark:text-[#0A84FF] text-[10px] font-black uppercase tracking-wider border border-[#0071E3]/10">{nome}</span>
+                    <span key={nome} className="px-4 py-2 rounded-xl bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.15em] border border-primary/10">{nome}</span>
                   ))}
                 </div>
               </>
             ) : (
-              <p className="text-[13px] text-[#34C759] font-bold">Você manteve contato com toda a sua rede no último mês. Excelente! 🤝</p>
+              <p className="text-[13px] text-emerald-400 font-black uppercase tracking-widest">Você manteve contato com toda a sua rede no último mês. 🤝</p>
             )}
           </div>
         </div>
       </div>
+
 
     </div>
   );
