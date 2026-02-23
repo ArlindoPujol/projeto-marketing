@@ -33,7 +33,7 @@
   --primary-foreground: #FFFFFF;
 
   --separator: rgba(0, 0, 0, 0.08);
-  --grid-pattern: rgba(0, 0, 0, 0.03);
+  --grid-pattern: rgba(0, 0, 0, 0.1);
 }
 
 [class~='dark'] {
@@ -62,7 +62,7 @@
   --primary-foreground: #FFFFFF;
 
   --separator: rgba(255, 255, 255, 0.08);
-  --grid-pattern: rgba(255, 255, 255, 0.03);
+  --grid-pattern: rgba(255, 255, 255, 0.1);
 }
 
 @theme inline {
@@ -84,9 +84,6 @@
 
 body {
   background: var(--background);
-  background-image:
-    radial-gradient(circle at 1px 1px, var(--grid-pattern) 1px, transparent 0);
-  background-size: 32px 32px;
   color: var(--foreground);
   font-family: var(--font-geist-sans), -apple-system, system-ui, sans-serif;
   transition: background-color 0.5s ease;

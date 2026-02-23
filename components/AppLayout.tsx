@@ -27,11 +27,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                             opacity-0 dark:opacity-15
                             bg-purple-600 transition-all duration-1000" />
 
-                                {/* Subtle Dot Grid Pattern - Dark Only */}
-                                <div className="absolute inset-0 opacity-0 dark:opacity-[0.05] transition-opacity duration-700"
+                                {/* Subtle Dot Grid Pattern - Light & Dark */}
+                                <div className="absolute inset-0 opacity-[0.4] dark:opacity-[0.1] transition-opacity duration-700"
                                     style={{
-                                        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1.5px)',
-                                        backgroundSize: '40px 40px',
+                                        backgroundImage: 'radial-gradient(circle, var(--grid-pattern) 1px, transparent 0)',
+                                        backgroundSize: '32px 32px',
                                     }}
                                 />
                             </div>
