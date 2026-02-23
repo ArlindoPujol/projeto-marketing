@@ -2,6 +2,7 @@
 'use client';
 
 import { Farmacia, Tarefa, Reuniao } from '@/lib/db';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
@@ -23,6 +24,7 @@ const statusConfig: Record<string, { label: string; cls: string }> = {
 };
 
 export default function FarmaciasPage() {
+    const router = useRouter();
     const confirm = useConfirm();
     const { toast } = useToast();
     const { farmacias, refreshFarmacias } = useFarmacia();
@@ -291,10 +293,24 @@ export default function FarmaciasPage() {
                                         </div>
 
                                         <div className="flex items-center gap-1">
-                                            <Link href={`/farmacias/${farmacia.id}/editar`} onClick={e => e.stopPropagation()} className="p-2 text-gray-400 hover:text-blue-500 transition-colors">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    router.push(`/farmacias/${farmacia.id}/editar`);
+                                                }}
+                                                className="p-2 text-gray-400 hover:text-blue-500 transition-colors"
+                                            >
                                                 <Pencil className="h-3.5 w-3.5" />
-                                            </Link>
-                                            <button onClick={e => handleDelete(e, farmacia.id, farmacia.nomeFarmacia)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                                            </button>
+                                            <button
+                                                onClick={e => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    handleDelete(e, farmacia.id, farmacia.nomeFarmacia);
+                                                }}
+                                                className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                                            >
                                                 <Trash2 className="h-3.5 w-3.5" />
                                             </button>
                                             <div className="w-px h-3 bg-black/5 dark:bg-white/5 mx-1" />
