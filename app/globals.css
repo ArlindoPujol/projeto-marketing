@@ -3,76 +3,66 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ═══════════════════════════════════════════════════════
-   DESIGN SYSTEM — Premium Midnight Evolution
-   Inspiração: Modern High-End Dashboards
+   DESIGN SYSTEM — Apple Minimalist Evolution
+   Inspiração: macOS Sequoia & iOS 18
    ═══════════════════════════════════════════════════════ */
 
 :root {
   color-scheme: light;
 
-  /* Fundo sutilmente azulado/claro */
-  --background: #F8FAFC;
+  /* Apple Pure Light Palette */
+  --background: #F5F5F7;
   --background-raised: #FFFFFF;
 
-  /* Texto */
-  --foreground: #0F172A;
-  --foreground-2: #334155;
-  --foreground-3: #64748B;
-  --foreground-4: #94A3B8;
+  /* Typography */
+  --foreground: #1D1D1F;
+  --foreground-2: #424245;
+  --foreground-3: #86868B;
+  --foreground-4: #A1A1A6;
 
-  /* Superfícies */
-  --card: rgba(255, 255, 255, 0.75);
-  --card-foreground: #0F172A;
-  --surface: rgba(255, 255, 255, 0.65);
-  --surface-raised: rgba(255, 255, 255, 0.95);
+  /* Surfaces */
+  --card: #FFFFFF;
+  --card-foreground: #1D1D1F;
+  --surface: rgba(255, 255, 255, 0.7);
 
-  /* Bordas */
-  --border: rgba(0, 0, 0, 0.06);
-  --border-focus: rgba(62, 123, 255, 0.40);
-
-  /* Primária — Electric Blue Base */
-  --primary: #2563EB;
-  --primary-hover: #1D4ED8;
+  /* Borders & Accents */
+  --border: rgba(0, 0, 0, 0.05);
+  --border-focus: #0071E3;
+  --primary: #0071E3;
+  --primary-hover: #0077ED;
   --primary-foreground: #FFFFFF;
 
-  /* Separadores */
-  --separator: rgba(15, 23, 42, 0.08);
+  --separator: rgba(0, 0, 0, 0.08);
 }
 
-/* ── MODO MIDNIGHT (Dark) ── */
 [class~='dark'] {
   color-scheme: dark;
 
-  /* Fundo Deep Midnight */
-  --background: #05070A;
-  --background-raised: #0A0D14;
+  /* Apple Midnight Dark Palette */
+  --background: #000000;
+  --background-raised: #161617;
 
-  /* Texto */
-  --foreground: #F8FAFC;
-  --foreground-2: #E2E8F0;
-  --foreground-3: #94A3B8;
-  --foreground-4: #475569;
+  /* Typography */
+  --foreground: #F5F5F7;
+  --foreground-2: #E8E8ED;
+  --foreground-3: #86868B;
+  --foreground-4: #424245;
 
-  /* Superfícies Glass modificado */
-  --card: rgba(15, 18, 29, 0.65);
-  --card-foreground: #F8FAFC;
-  --surface: rgba(21, 25, 40, 0.70);
-  --surface-raised: rgba(30, 41, 59, 0.85);
+  /* Surfaces Glass */
+  --card: rgba(28, 28, 30, 0.8);
+  --card-foreground: #F5F5F7;
+  --surface: rgba(44, 44, 46, 0.6);
 
-  /* Bordas Neon-Glass */
-  --border: rgba(255, 255, 255, 0.08);
-  --border-focus: rgba(62, 123, 255, 0.60);
-
-  /* Primária — Electric Blue Neon */
-  --primary: #3E7BFF;
-  --primary-hover: #60A5FA;
+  /* Borders & Accents */
+  --border: rgba(255, 255, 255, 0.1);
+  --border-focus: #0A84FF;
+  --primary: #0A84FF;
+  --primary-hover: #409CFF;
   --primary-foreground: #FFFFFF;
 
-  /* Separadores */
-  --separator: rgba(255, 255, 255, 0.06);
+  --separator: rgba(255, 255, 255, 0.08);
 }
 
-/* ── Mapeamento para Tailwind ── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -81,30 +71,30 @@
   --color-border: var(--border);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  
-  /* Custom Radius matching the reference image */
+
   --radius-4xl: 2.5rem;
   --radius-5xl: 3rem;
 }
 
 /* ═══════════════════════════════════════════════════════
-   BASE & TYPOGRAPHY
+   BASE STYLES
    ═══════════════════════════════════════════════════════ */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), -apple-system, sans-serif;
-  transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
+  font-family: var(--font-geist-sans), -apple-system, system-ui, sans-serif;
+  transition: background-color 0.5s ease;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Títulos com look moderno e tracking reduzido */
-h1, h2, h3, h4 {
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-  font-weight: 800;
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.025em;
+  font-weight: 700;
 }
 
 .tabular-nums {
@@ -113,105 +103,80 @@ h1, h2, h3, h4 {
 }
 
 /* ═══════════════════════════════════════════════════════
-   GLOWING GLASSMORPHISM
+   COMPONENTS
    ═══════════════════════════════════════════════════════ */
 
 .glass-card {
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-radius: 24px;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Light Glass */
-.glass-card {
+  @apply transition-all duration-300;
   background: var(--card);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 
-    0 10px 40px -10px rgba(0,0,0,0.05),
-    inset 0 1px 1px rgba(255,255,255,0.8);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
-/* Dark Glass — Midnight Glow */
 .dark .glass-card {
-  background: linear-gradient(135deg, rgba(20, 24, 39, 0.72) 0%, rgba(10, 12, 20, 0.65) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 15px 45px -12px rgba(0, 0, 0, 0.6),
-    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: var(--card);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .glass-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(62, 123, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+  border-color: var(--border-focus);
 }
 
 .dark .glass-card:hover {
-  box-shadow: 
-    0 25px 60px -12px rgba(0, 0, 0, 0.8),
-    inset 0 0 0 1px rgba(62, 123, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
-/* ── Glow Effects ── */
-.glow-primary {
-  box-shadow: 0 0 20px rgba(62, 123, 255, 0.3);
-}
-
-.glow-purple {
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
-}
-
-/* ═══════════════════════════════════════════════════════
-   COMPONENTS PREMIUM
-   ═══════════════════════════════════════════════════════ */
-
-/* Botão Estilo Reference */
+/* Premium Button */
 .btn-premium {
-  @apply relative overflow-hidden flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all duration-300 active:scale-95;
-  background: linear-gradient(135deg, var(--primary) 0%, #4F46E5 100%);
+  @apply flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-semibold transition-all duration-200 active:scale-95;
+  background: var(--primary);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 24px -6px rgba(37, 99, 235, 0.4);
 }
 
 .btn-premium:hover {
-  @apply -translate-y-0.5 shadow-lg;
   filter: brightness(1.1);
+  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
 }
 
-/* Input Minimalista Premium */
-input, select, textarea {
-  @apply rounded-xl border transition-all duration-300 px-4 py-3;
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.1);
+/* Sidebar Nav Item */
+.nav-item {
+  @apply flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200;
+  color: var(--foreground-3);
 }
 
-.dark input, .dark select, .dark textarea {
-  background: rgba(15, 23, 42, 0.4);
+.nav-item:hover {
+  color: var(--foreground);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.dark .nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-item-active {
+  @apply bg-white shadow-sm font-bold;
+  color: var(--primary) !important;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.dark .nav-item-active {
+  background: rgba(255, 255, 255, 0.1);
+  color: white !important;
   border-color: rgba(255, 255, 255, 0.05);
 }
 
-input:focus {
-  @apply outline-none ring-2 ring-primary/20 border-primary/40;
-}
-
-/* ═══════════════════════════════════════════════════════
-   SCROLLBAR & UTILS
-   ═══════════════════════════════════════════════════════ */
-
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
@@ -219,15 +184,19 @@ input:focus {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.animate-glow {
-  animation: glow 4s ease-in-out infinite alternate;
+/* Layout Animation */
+.page-transition {
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
-@keyframes glow {
-  from { opacity: 0.4; filter: blur(80px); }
-  to { opacity: 0.8; filter: blur(120px); }
-}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 
-/* Overrides para garantir o look dark */
-.dark .text-muted { color: var(--foreground-3); }
-.dark .bg-muted { background: var(--background-raised); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

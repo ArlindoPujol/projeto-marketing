@@ -62,39 +62,21 @@ function StatCard({ label, value, sub, icon: Icon, color, href }: {
   icon: any; color: string; href?: string;
 }) {
   const inner = (
-    <div className={cn(
-      'glass-card group p-6 flex flex-col justify-between min-h-[160px]',
-      href && 'cursor-pointer'
-    )}>
-      {/* Background Accent Glow */}
-      <div className={cn(
-        'absolute -top-12 -right-12 w-32 h-32 rounded-full blur-[60px] opacity-[0.15] transition-opacity group-hover:opacity-[0.25]',
-        color
-      )} />
-
-      <div className="relative z-10 flex flex-col h-full justify-between gap-6">
-        <div className="flex items-center justify-between">
-          <div className={cn(
-            'flex items-center justify-center w-12 h-12 rounded-2xl border transition-all duration-500',
-            'bg-white/5 border-white/10 group-hover:scale-110 group-hover:rotate-3 group-hover:border-primary/50'
-          )}>
-            <Icon className={cn('h-6 w-6', color.replace('bg-', 'text-'))} />
-          </div>
-          {href && (
-            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 opacity-0 group-hover:opacity-100 transition-all">
-              <ArrowRight className="h-4 w-4 text-primary" />
-            </div>
-          )}
+    <div className="glass-card p-6 flex flex-col justify-between min-h-[140px] group">
+      <div className="flex items-center justify-between mb-4">
+        <div className={cn(
+          'w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300',
+          'bg-black/[0.03] dark:bg-white/[0.05] group-hover:scale-110 group-hover:bg-primary/10'
+        )}>
+          <Icon className={cn('h-5 w-5', color.replace('bg-', 'text-'))} />
         </div>
-
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40 mb-1.5">{label}</p>
-          <div className="flex items-baseline gap-2">
-            <h4 className="text-[32px] font-black tracking-tight tabular-nums leading-none">
-              {value}
-            </h4>
-            {sub && <span className="text-[11px] font-bold text-foreground/30">{sub}</span>}
-          </div>
+        {href && <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all text-primary translate-x-[-4px] group-hover:translate-x-0" />}
+      </div>
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-foreground/30 mb-1">{label}</p>
+        <div className="flex items-baseline gap-2">
+          <h4 className="text-2xl font-bold tracking-tight tabular-nums">{value}</h4>
+          {sub && <span className="text-[10px] font-bold text-foreground/20">{sub}</span>}
         </div>
       </div>
     </div>
@@ -106,18 +88,16 @@ function SectionHeader({ icon: Icon, color, title, sub, action, actionHref }: {
   icon: any; color: string; title: string; sub?: string; action?: string; actionHref?: string;
 }) {
   return (
-    <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
-      <div className="flex items-center gap-4">
-        <div className={cn('p-2.5 rounded-2xl bg-opacity-10 shadow-lg', color.replace('text-', 'bg-'))}>
-          <Icon className={cn('h-5 w-5', color)} />
-        </div>
+    <div className="px-8 py-5 border-b border-black/[0.03] dark:border-white/[0.03] flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <Icon className={cn('h-5 w-5 opacity-40', color)} />
         <div>
-          <h3 className="text-[14px] font-black uppercase tracking-[0.15em]">{title}</h3>
-          {sub && <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mt-1">{sub}</p>}
+          <h3 className="text-xs font-bold uppercase tracking-widest">{title}</h3>
+          {sub && <p className="text-[10px] font-medium text-foreground/30 mt-0.5">{sub}</p>}
         </div>
       </div>
       {action && actionHref && (
-        <Link href={actionHref} className="btn-premium py-2 px-4 shadow-none text-[10px] tracking-widest uppercase">
+        <Link href={actionHref} className="text-[10px] font-bold text-primary hover:underline tracking-widest uppercase">
           {action}
         </Link>
       )}
@@ -125,8 +105,6 @@ function SectionHeader({ icon: Icon, color, title, sub, action, actionHref }: {
   );
 }
 
-
-/* ── Página principal ────────────────────────────────── */
 export default function Dashboard() {
   const { selectedFarmaciaId } = useFarmacia();
   const [data, setData] = useState<DashData | null>(null);
@@ -154,7 +132,6 @@ export default function Dashboard() {
         const fMap = Object.fromEntries(allF.map(f => [f.id, f.nomeFarmacia]));
         const in3 = new Date(today); in3.setDate(in3.getDate() + 3);
 
-        /* ── KPIs ── */
         const overdueTotal = tasks.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento) < today).length;
         const pendingTotal = tasks.filter(t => t.status !== 'done').length;
         const doneTotal = tasks.filter(t => t.status === 'done').length;
@@ -163,7 +140,6 @@ export default function Dashboard() {
           return d >= today && d < tomorrow;
         }).length;
 
-        /* ── Radar Rows ── */
         const farmaciasRows: FarmaciaRow[] = farmacias.map(f => {
           const ft = tasks.filter(t => t.farmaciaId === f.id);
           const done = ft.filter(t => t.status === 'done').length;
@@ -180,7 +156,6 @@ export default function Dashboard() {
           };
         }).sort((a, b) => b.overdueTasks - a.overdueTasks || a.nomeFarmacia.localeCompare(b.nomeFarmacia));
 
-        /* ── Urgências ── */
         const urgentTasks = [
           ...tasks.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento) < today),
           ...tasks.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento) >= today && new Date(t.vencimento) < in3),
@@ -189,14 +164,12 @@ export default function Dashboard() {
           .slice(0, 6)
           .map(t => ({ ...t, farmaciaNome: fMap[t.farmaciaId] ?? '—' }));
 
-        /* ── Próximas Reuniões ── */
         const nextMeetings = reunioes
           .filter(r => new Date(r.data + 'T12:00:00') >= today)
           .sort((a, b) => new Date(a.data).getTime() - new Date(b.data).getTime())
           .slice(0, 5)
           .map(m => ({ ...m, farmaciaNome: fMap[m.farmaciaId] ?? '—' }));
 
-        /* ── Insights ── */
         const semAtencao = farmacias
           .filter(f => tasks.filter(t => t.farmaciaId === f.id && t.status !== 'done').length === 0)
           .map(f => f.nomeFarmacia)
@@ -224,218 +197,134 @@ export default function Dashboard() {
     load();
   }, [selectedFarmaciaId]);
 
-  if (loading) return <PageLoader label="Mapeando sua rede..." />;
+  if (loading) return <PageLoader label="Autenticando..." />;
   if (!data) return null;
 
   const hour = new Date().getHours();
   const greet = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite';
 
   return (
-    <div className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+    <div className="space-y-10 page-transition">
 
-      {/* ── Header ── */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-[32px] md:text-[42px] font-black text-[#1C1C1E] dark:text-white tracking-tighter leading-none">
-            {greet}.
-          </h1>
-          <p className="text-[13px] font-medium text-[#8E8E93] mt-2">
-            {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {data.overdueTotal > 0 && (
-            <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400">
-              <AlertTriangle className="h-4 w-4" />
-              <span className="text-[11px] font-black uppercase tracking-wider">{data.overdueTotal} Emergência{data.overdueTotal > 1 ? 's' : ''}</span>
-            </div>
-          )}
-        </div>
+      {/* Header - Apple Style */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-bold tracking-tight">{greet}.</h1>
+        <p className="text-[13px] font-medium text-foreground/40">
+          {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+        </p>
       </div>
 
-      {/* ── KPIs ── */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
-        <StatCard label="Unidades" value={data.totalFarmacias} icon={Store} color="bg-blue-500" href="/farmacias" />
-        <StatCard label="Atrasadas" value={data.overdueTotal} icon={AlertTriangle} color="bg-red-500" href="/tarefas" />
-        <StatCard label="Pendentes" value={data.pendingTotal} icon={Clock} color="bg-[#FF9500]" href="/tarefas" />
-        <StatCard label="Concluídas" value={data.doneTotal} icon={CheckCircle2} color="bg-[#34C759]" href="/tarefas" />
-        <StatCard label="Reuniões Hoje" value={data.reuniaoHoje} icon={Calendar} color="bg-[#AF52DE]" href="/reunioes" />
+      {/* KPIs Grid */}
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-5">
+        <StatCard label="Unidades" value={data.totalFarmacias} icon={Store} color="text-primary" href="/farmacias" />
+        <StatCard label="Atrasadas" value={data.overdueTotal} icon={AlertTriangle} color="text-red-500" href="/tarefas" />
+        <StatCard label="Pendentes" value={data.pendingTotal} icon={Clock} color="text-amber-500" href="/tarefas" />
+        <StatCard label="Concluídas" value={data.doneTotal} icon={CheckCircle2} color="text-emerald-500" href="/tarefas" />
+        <StatCard label="Reuniões Hoje" value={data.reuniaoHoje} icon={Calendar} color="text-indigo-500" href="/reunioes" />
       </div>
 
-      {/* ── Conteúdo Principal ── */}
       <div className="grid gap-6 lg:grid-cols-12">
-
         {/* Radar de Monitoramento */}
-        <div className="lg:col-span-8 glass-card border-none shadow-none">
+        <div className="lg:col-span-8 glass-card overflow-hidden">
           <SectionHeader
-            icon={Target} color="text-primary"
-            title="Radar de Performance" sub="Atividades por unidade"
-            action="Configurações" actionHref="/farmacias"
+            icon={Activity} color="text-primary"
+            title="Radar de Performance" sub="Status atual por unidade"
+            action="Gerenciar" actionHref="/farmacias"
           />
 
-          <div className="divide-y divide-white/5">
-            {data.farmaciasRows.length === 0 ? (
-              <div className="py-20 text-center">
-                <Store className="h-10 w-10 mx-auto text-foreground/10 mb-4" />
-                <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em]">Nenhuma unidade cadastrada</p>
-              </div>
-            ) : (
-              data.farmaciasRows.map(f => {
-                const pct = f.totalTasks > 0 ? Math.round((f.doneTasks / f.totalTasks) * 100) : 0;
-                const st = statusConfig[f.statusMarketing] ?? statusConfig['paused'];
+          <div className="divide-y divide-black/[0.03] dark:divide-white/[0.03]">
+            {data.farmaciasRows.map(f => {
+              const pct = f.totalTasks > 0 ? Math.round((f.doneTasks / f.totalTasks) * 100) : 0;
+              const hasAlert = f.overdueTasks > 0;
 
-                return (
-                  <Link key={f.id} href={`/farmacias/${f.id}`} className="flex items-center gap-6 px-8 py-6 hover:bg-white/[0.03] transition-colors group">
-                    <div className={cn('h-3 w-3 rounded-full shrink-0 ring-4 ring-opacity-20', st.dot, st.color.replace('text-', 'ring-'))} />
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-4 mb-3">
-                        <span className="text-[15px] font-extrabold tracking-tight truncate">{f.nomeFarmacia}</span>
-                        {f.overdueTasks > 0 && (
-                          <span className="text-[9px] font-black px-2.5 py-1 rounded-lg bg-red-500/10 text-red-400 border border-red-500/10 uppercase tracking-widest">
-                            {f.overdueTasks} Alerta{f.overdueTasks > 1 ? 's' : ''}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-6">
-                        <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
-                          <div className={cn('h-full rounded-full transition-all duration-1000 ease-out', f.overdueTasks > 0 ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'bg-primary shadow-[0_0_10px_rgba(62,123,255,0.3)]')} style={{ width: `${pct}%` }} />
-                        </div>
-                        <span className="text-[11px] font-black text-foreground/40 tabular-nums w-8">{pct}%</span>
-                      </div>
+              return (
+                <Link key={f.id} href={`/farmacias/${f.id}`} className="flex items-center gap-6 px-8 py-4 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors group">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-[14px] font-bold tracking-tight truncate">{f.nomeFarmacia}</span>
+                      {hasAlert && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 uppercase">
+                          Alerta
+                        </span>
+                      )}
                     </div>
-
-                    <div className="hidden md:flex flex-col items-end gap-1.5">
-                      <p className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.2em]">Pé na estrada</p>
-                      <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest">
-                        <MapPin className="h-3 w-3 opacity-30" /> {f.cidade || '—'}
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1 h-1 bg-black/[0.03] dark:bg-white/[0.05] rounded-full overflow-hidden">
+                        <div className={cn('h-full rounded-full transition-all duration-1000', hasAlert ? 'bg-red-500' : 'bg-primary')} style={{ width: `${pct}%` }} />
                       </div>
+                      <span className="text-[10px] font-bold text-foreground/40 tabular-nums">{pct}%</span>
                     </div>
-
-                    <ChevronRight className="h-4 w-4 text-foreground/20 group-hover:text-primary transition-all group-hover:translate-x-1" />
-                  </Link>
-                )
-              })
-            )}
+                  </div>
+                  <ChevronRight className="h-4 w-4 opacity-10 group-hover:opacity-100 transition-opacity" />
+                </Link>
+              )
+            })}
           </div>
         </div>
 
-        {/* Coluna Direita: Urgências & Agenda */}
+        {/* Alta Prioridade */}
         <div className="lg:col-span-4 space-y-6">
-
-          {/* Urgências */}
-          <div className="glass-card border-none">
-            <SectionHeader icon={Zap} color="text-amber-400" title="Alta Prioridade" sub="Resolver agora" action="Expandir" actionHref="/tarefas" />
-            <div className="p-4 space-y-2">
+          <div className="glass-card overflow-hidden">
+            <SectionHeader icon={Zap} color="text-amber-500" title="Alta Prioridade" sub="Urgências" action="Ver Tudo" actionHref="/tarefas" />
+            <div className="p-4 space-y-1">
               {data.urgentTasks.length === 0 ? (
-                <div className="py-10 text-center opacity-40">
-                  <CheckCircle2 className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <p className="text-[9px] font-black uppercase tracking-[0.2em]">Operação Limpa</p>
-                </div>
+                <p className="py-8 text-center text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Tudo em ordem</p>
               ) : (
                 data.urgentTasks.map(t => (
-                  <Link key={t.id} href={`/tarefas`} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/[0.04] transition-all group border border-transparent hover:border-white/5">
-                    <div className={cn('h-2 w-2 rounded-full shrink-0', new Date(t.vencimento!) < today ? 'bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.6)]' : 'bg-amber-400')} />
+                  <Link key={t.id} href="/tarefas" className="flex items-center gap-3 p-3 rounded-xl hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors group">
+                    <div className={cn('w-1.5 h-1.5 rounded-full', new Date(t.vencimento!) < today ? 'bg-red-500' : 'bg-amber-500')} />
                     <div className="flex-1 min-w-0">
                       <p className="text-[12px] font-bold truncate group-hover:text-primary transition-colors">{t.titulo}</p>
-                      <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.15em] mt-1 truncate">{t.farmaciaNome}</p>
+                      <p className="text-[9px] font-medium text-foreground/30 truncate">{t.farmaciaNome}</p>
                     </div>
-                    <span className={cn('text-[10px] font-black tabular-nums whitespace-nowrap', new Date(t.vencimento!) < today ? 'text-red-400' : 'text-amber-400')}>{relativeDay(t.vencimento!)}</span>
+                    <span className="text-[10px] font-bold text-foreground/30">{relativeDay(t.vencimento!)}</span>
                   </Link>
                 ))
               )}
             </div>
           </div>
 
-          {/* Agenda Curta */}
-          <div className="glass-card border-none">
-            <SectionHeader icon={Users} color="text-purple-400" title="Próximas Reuniões" sub="Timeline de contato" action="Agenda" actionHref="/reunioes" />
-            <div className="p-4 space-y-3">
-              {data.nextMeetings.length === 0 ? (
-                <div className="py-10 text-center opacity-20 font-black text-[10px] uppercase tracking-[0.2em]">Agenda vazia</div>
-              ) : (
-                data.nextMeetings.map(m => {
-                  const d = new Date(m.data + 'T12:00:00');
-                  const isHoje = d.toDateString() === new Date().toDateString();
-                  return (
-                    <div key={m.id} className="flex items-center gap-5 p-4 rounded-[24px] bg-white/[0.03] border border-white/5 hover:border-purple-500/20 transition-all group">
-                      <div className={cn(
-                        'flex flex-col items-center justify-center w-12 h-12 rounded-2xl border shrink-0 transition-transform group-hover:scale-105',
-                        isHoje ? 'bg-purple-600 border-purple-400 text-white shadow-lg shadow-purple-600/30' : 'bg-white/5 border-white/10'
-                      )}>
-                        <span className="text-[15px] font-black leading-none">{d.getDate()}</span>
-                        <span className="text-[8px] font-black uppercase tracking-tighter mt-1 opacity-60">{d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-extrabold truncate">{m.pauta || 'Reunião de Alinhamento'}</p>
-                        <p className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.15em] mt-1 truncate">{m.farmaciaNome}</p>
-                      </div>
-                    </div>
-                  )
-                })
-              )}
+          <div className="glass-card overflow-hidden">
+            <SectionHeader icon={Calendar} color="text-indigo-500" title="Próximas Reuniões" sub="Agenda curta" action="Calendário" actionHref="/reunioes" />
+            <div className="p-4 space-y-2">
+              {data.nextMeetings.map(m => (
+                <div key={m.id} className="flex items-center gap-3 p-3 rounded-xl bg-black/[0.01] dark:bg-white/[0.01] border border-black/[0.02] dark:border-white/[0.02]">
+                  <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/5 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center shrink-0">
+                    <span className="text-[14px] font-bold leading-none">{new Date(m.data + 'T12:00:00').getDate()}</span>
+                    <span className="text-[8px] font-bold uppercase opacity-30">{new Date(m.data + 'T12:00:00').toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[12px] font-bold truncate">{m.pauta || 'Alinhamento'}</p>
+                    <p className="text-[9px] font-medium text-foreground/30 truncate">{m.farmaciaNome}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Seção de Insights ── */}
+      {/* Insights */}
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="glass-card border-none p-10">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 rounded-2xl bg-orange-500/10 text-orange-400 shadow-lg">
-              <ClipboardList className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="text-[18px] font-black tracking-tight">Oportunidades de Foco</h3>
-              <p className="text-[10px] font-bold text-foreground/30 uppercase tracking-widest mt-1">Análise Proativa</p>
-            </div>
-          </div>
-          <div className="space-y-6">
-            {data.semAtencao.length > 0 ? (
-              <>
-                <p className="text-[13px] text-foreground/60 leading-relaxed font-medium">As seguintes unidades estão sem tarefas pendentes. Talvez seja hora de propor um novo projeto ou ação estratégica:</p>
-                <div className="flex flex-wrap gap-2.5 pt-2">
-                  {data.semAtencao.map(nome => (
-                    <span key={nome} className="px-4 py-2 rounded-xl bg-orange-500/5 text-orange-400 text-[10px] font-black uppercase tracking-[0.15em] border border-orange-500/10">{nome}</span>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <p className="text-[13px] text-emerald-400 font-black uppercase tracking-widest">Todas as unidades possuem atividades em andamento. ✅</p>
-            )}
+        <div className="glass-card p-8">
+          <h3 className="text-sm font-bold tracking-tight mb-2">Oportunidades de Foco</h3>
+          <p className="text-[12px] text-foreground/40 leading-relaxed mb-6">Unidades sem tarefas pendentes. Ótimo momento para propor novas estratégias:</p>
+          <div className="flex flex-wrap gap-2">
+            {data.semAtencao.map(nome => (
+              <span key={nome} className="px-3 py-1.5 rounded-lg bg-primary/5 text-primary text-[10px] font-bold uppercase tracking-wider">{nome}</span>
+            ))}
           </div>
         </div>
-
-        <div className="glass-card border-none p-10">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 rounded-2xl bg-primary/10 text-primary shadow-lg">
-              <TrendingUp className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="text-[18px] font-black tracking-tight">Análise de Relacionamento</h3>
-              <p className="text-[10px] font-bold text-foreground/30 uppercase tracking-widest mt-1">Gestão de Contato</p>
-            </div>
-          </div>
-          <div className="space-y-6">
-            {data.semReuniao30d.length > 0 ? (
-              <>
-                <p className="text-[13px] text-foreground/60 leading-relaxed font-medium">Não detectamos reuniões nos últimos 30 dias para estas unidades. Um contato proativo pode fortalecer a parceria:</p>
-                <div className="flex flex-wrap gap-2.5 pt-2">
-                  {data.semReuniao30d.map(nome => (
-                    <span key={nome} className="px-4 py-2 rounded-xl bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.15em] border border-primary/10">{nome}</span>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <p className="text-[13px] text-emerald-400 font-black uppercase tracking-widest">Você manteve contato com toda a sua rede no último mês. 🤝</p>
-            )}
+        <div className="glass-card p-8">
+          <h3 className="text-sm font-bold tracking-tight mb-2">Manutenção de Relação</h3>
+          <p className="text-[12px] text-foreground/40 leading-relaxed mb-6">Nenhum contato formal nos últimos 30 dias nestas unidades:</p>
+          <div className="flex flex-wrap gap-2">
+            {data.semReuniao30d.map(nome => (
+              <span key={nome} className="px-3 py-1.5 rounded-lg bg-amber-500/5 text-amber-500 text-[10px] font-bold uppercase tracking-wider">{nome}</span>
+            ))}
           </div>
         </div>
       </div>
-
-
     </div>
   );
 }
