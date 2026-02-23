@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import {
     ArrowLeft, Eye, EyeOff, Shield, ShoppingBag,
-    Database, FileText, Instagram
+    Database, FileText, Instagram, Check
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -62,45 +62,7 @@ function ExpandPanel({ show, children }: { show: boolean; children: React.ReactN
     );
 }
 
-function PasswordInput({
-    name, value, onChange, placeholder
-}: { name: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; placeholder?: string; }) {
-    const [show, setShow] = useState(false);
-    const [verifying, setVerifying] = useState(false);
-    const [pin, setPin] = useState('');
-
-    const verify = () => {
-        if (pin === 'admin') { setShow(true); setVerifying(false); setPin(''); }
-        else { alert('Acesso Negado'); setPin(''); }
-    };
-
-    if (verifying) return (
-        <div className="flex gap-2">
-            <input type="password" autoFocus value={pin}
-                onChange={e => setPin(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && verify()}
-                className="flex-1 bg-black/[0.02] border border-blue-400/30 rounded-xl px-4 py-2.5 text-sm outline-none"
-                placeholder="Chave mestra..." />
-            <button type="button" onClick={verify}
-                className="bg-blue-600 text-white px-3 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest">
-                OK
-            </button>
-        </div>
-    );
-
-    return (
-        <div className="relative">
-            <input type={show ? 'text' : 'password'} name={name} value={value} onChange={onChange}
-                placeholder={placeholder}
-                className={cn(inputCls, "pr-10")} />
-            <button type="button"
-                onClick={() => show ? setShow(false) : setVerifying(true)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors">
-                {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-        </div>
-    );
-}
+// (Componente PasswordInput removido conforme solicitação de simplificação de acessos)
 
 // ─────────────────────────────────────────────────────────
 // Componente principal
@@ -127,13 +89,8 @@ export default function FarmaciaForm({ initialData }: Props) {
     const [facebook, setFacebook] = useState(f.facebook || '');
     const [googleMyBusiness, setGoogleMyBusiness] = useState(f.googleMyBusiness || '');
 
-    // Logins
-    const [emailGoogle, setEmailGoogle] = useState(f.emailGoogle ?? '');
-    const [senhaGoogle, setSenhaGoogle] = useState(f.senhaGoogle ?? '');
-    const [loginFacebook, setLoginFacebook] = useState(f.loginFacebook ?? '');
-    const [senhaFacebook, setSenhaFacebook] = useState(f.senhaFacebook ?? '');
-    const [loginInstagram, setLoginInstagram] = useState(f.loginInstagram ?? '');
-    const [senhaInstagram, setSenhaInstagram] = useState(f.senhaInstagram ?? '');
+    // Acessos
+    const [acessosEnviadosWhatsapp, setAcessosEnviadosWhatsapp] = useState(f.acessosEnviadosWhatsapp || false);
 
     // Estrutura
     const [temDelivery, setTemDelivery] = useState(initialData?.temDelivery || false);
@@ -176,28 +133,25 @@ export default function FarmaciaForm({ initialData }: Props) {
             endereco,
             instagram,
             facebook,
-            googleMyBusiness,
-            emailGoogle,
-            senhaGoogle,
-            loginFacebook,
-            senhaFacebook,
-            loginInstagram,
-            senhaInstagram,
+            googleMyBusiness: googleMyBusiness || null,
+            acessosEnviadosWhatsapp,
             temDelivery,
             faturamentoDeliveryMensal: faturamentoDelivery ? parseFloat(faturamentoDelivery) : null,
-            numeroPedidos: numeroPedidos || undefined,
+            numeroPedidos: numeroPedidos || null,
             jaInvestiuTrafego,
-            quemFaziaTrafego,
+            quemFaziaTrafego: quemFaziaTrafego || null,
             quantoInvestia: quantoInvestia ? parseFloat(quantoInvestia) : null,
-            ondeInvestia: ondeInvestia.length ? ondeInvestia.join(', ') : undefined,
+            ondeInvestia: ondeInvestia.length ? ondeInvestia.join(', ') : null,
             temSite,
-            siteUrl,
+            siteUrl: siteUrl || null,
             temEcommerce,
-            ecommerceDescricao: ecommerceNotas || undefined,
-            notas,
+            ecommerceDescricao: ecommerceNotas || null,
+            notas: notas || null,
             statusMarketing: initialData?.statusMarketing || 'waiting_access',
             prioridade: initialData?.prioridade || 'medium',
         };
+
+        console.log('Enviando Payload:', payload);
 
         try {
             const url = initialData ? `/api/farmacias/${initialData.id}` : '/api/farmacias';
@@ -207,15 +161,28 @@ export default function FarmaciaForm({ initialData }: Props) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
-            if (!res.ok) throw new Error('Falha ao salvar — tente novamente.');
+
+            const rawResult = await res.json();
+            console.log('Resultado da API:', rawResult);
+
+            if (!res.ok) {
+                console.error('ERRO NA API:', rawResult);
+                throw new Error(rawResult.error || 'Falha ao salvar — tente novamente.');
+            }
+
+            console.log('SUCESSO NA API:', rawResult);
+
+
             await refreshFarmacias();
             setBtnState('success');
             setTimeout(() => { router.push('/farmacias'); router.refresh(); }, 1200);
         } catch (err: any) {
+            console.error('Erro ao salvar farmácia:', err);
             setError(err.message);
             setBtnState('error');
-            setTimeout(() => setBtnState('idle'), 3000);
+            setTimeout(() => setBtnState('idle'), 5000);
         }
+
     };
 
     return (
@@ -306,63 +273,38 @@ export default function FarmaciaForm({ initialData }: Props) {
                 </div>
             </div>
 
-            {/* ── Card: Logins ── */}
+            {/* ── Card: Acessos ── */}
             <div className="glass-card p-6 rounded-2xl">
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-black/[0.04]">
-                    <div className="flex items-center gap-2">
-                        <Shield className="h-3.5 w-3.5 text-blue-500" />
-                        <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500">Logins</span>
-                    </div>
-                    <span className="text-[8px] font-black uppercase tracking-widest px-2.5 py-1 bg-amber-500/5 text-amber-600 border border-amber-500/10 rounded-lg">
-                        Confidencial
-                    </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {/* Google */}
-                    <div className="space-y-3 p-4 rounded-xl bg-black/[0.01] border border-black/[0.03]">
-                        <p className="text-[8px] font-black uppercase tracking-widest text-gray-500 pb-2 border-b border-black/[0.04]">Google</p>
-                        <div>
-                            <Label>E-mail</Label>
-                            <input value={emailGoogle} onChange={e => setEmailGoogle(e.target.value)}
-                                placeholder="admin@gmail.com" className={inputCls} />
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-green-500/10 border border-green-500/20">
+                            <Shield className="h-4 w-4 text-green-600" />
                         </div>
                         <div>
-                            <Label>Senha</Label>
-                            <PasswordInput name="senhaGoogle" value={senhaGoogle}
-                                onChange={e => setSenhaGoogle(e.target.value)} placeholder="••••••" />
+                            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500 block mb-0.5">Controle de Acessos</span>
+                            <h3 className="text-sm font-bold text-gray-800 tracking-tight">Os dados de acesso foram enviados via WhatsApp?</h3>
                         </div>
                     </div>
 
-                    {/* Facebook */}
-                    <div className="space-y-3 p-4 rounded-xl bg-black/[0.01] border border-black/[0.03]">
-                        <p className="text-[8px] font-black uppercase tracking-widest text-gray-500 pb-2 border-b border-black/[0.04]">Facebook</p>
-                        <div>
-                            <Label>Login</Label>
-                            <input value={loginFacebook} onChange={e => setLoginFacebook(e.target.value)}
-                                placeholder="login ou e-mail" className={inputCls} />
-                        </div>
-                        <div>
-                            <Label>Senha</Label>
-                            <PasswordInput name="senhaFacebook" value={senhaFacebook}
-                                onChange={e => setSenhaFacebook(e.target.value)} placeholder="••••••" />
-                        </div>
-                    </div>
-
-                    {/* Instagram */}
-                    <div className="space-y-3 p-4 rounded-xl bg-black/[0.01] border border-black/[0.03]">
-                        <p className="text-[8px] font-black uppercase tracking-widest text-gray-500 pb-2 border-b border-black/[0.04]">Instagram</p>
-                        <div>
-                            <Label>Login</Label>
-                            <input value={loginInstagram} onChange={e => setLoginInstagram(e.target.value)}
-                                placeholder="@usuário" className={inputCls} />
-                        </div>
-                        <div>
-                            <Label>Senha</Label>
-                            <PasswordInput name="senhaInstagram" value={senhaInstagram}
-                                onChange={e => setSenhaInstagram(e.target.value)} placeholder="••••••" />
-                        </div>
-                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setAcessosEnviadosWhatsapp(!acessosEnviadosWhatsapp)}
+                        className={cn(
+                            "flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 border",
+                            acessosEnviadosWhatsapp
+                                ? "bg-green-600 text-white border-green-600 shadow-lg shadow-green-500/20 scale-[1.02]"
+                                : "bg-black/[0.02] text-gray-400 border-black/[0.05] hover:bg-black/[0.04]"
+                        )}
+                    >
+                        {acessosEnviadosWhatsapp ? (
+                            <>
+                                <Check className="h-3.5 w-3.5" />
+                                Dados Enviados
+                            </>
+                        ) : (
+                            "Marcar como Enviado"
+                        )}
+                    </button>
                 </div>
             </div>
 

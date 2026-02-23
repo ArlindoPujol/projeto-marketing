@@ -13,47 +13,34 @@ export interface Farmacia {
     whatsapp: string | null;
     cidade: string | null;
     uf: string | null;
-    endereco?: string;
+    endereco: string | null;
     instagram: string | null;
-    facebook?: string;
-    googleMyBusiness?: string;
-    linkedin?: string;
-    youtube?: string;
-    website?: string;
+    facebook: string | null;
+    googleMyBusiness: string | null;
+    linkedin: string | null;
+    youtube: string | null;
+    website: string | null;
     temDelivery?: boolean;
-    faturamentoDeliveryMensal?: number | null;
-    numeroPedidos?: string;
+    faturamentoDeliveryMensal: number | null;
+    numeroPedidos: string | null;
     jaInvestiuTrafego: boolean;
     quemFaziaTrafego?: string | null;
     quantoInvestia?: number | null;
     entregaFaturamento?: string | null; // Alinhado com o Supabase
-    ondeInvestia?: string;
+    ondeInvestia: string | null;
     temSite?: boolean;
     siteUrl: string | null;
     temEcommerce?: boolean;
-    ecommerceDescricao?: string;
+    ecommerceDescricao: string | null;
     statusMarketing: StatusMarketing | string;
     prioridade: Prioridade | string;
-    notas?: string;
+    notas: string | null;
     criadoEm?: string;
     atualizadoEm?: string;
-    // Campos legados de Login (Sendo migrados para tabela Acessos)
-    emailGoogle?: string;
-    senhaGoogle?: string;
-    loginInstagram?: string;
-    senhaInstagram?: string;
-    loginFacebook?: string;
-    senhaFacebook?: string;
+    acessosEnviadosWhatsapp?: boolean;
 }
 
-export interface Acesso {
-    id: string;
-    farmaciaId: string;
-    tipo: string;
-    status: AcessoStatus | string;
-    referenciaCofre?: string;
-    observacao: string;
-}
+
 
 export interface PlaybookTemplateItem {
     id: string;
@@ -95,7 +82,7 @@ export interface Tarefa {
     status: TarefaStatus | string;
     prioridade?: Prioridade | string;
     vencimento: string | null;
-    notas?: string;
+    notas: string | null;
 }
 
 export interface Reuniao {
@@ -104,12 +91,12 @@ export interface Reuniao {
     data: string;
     pauta: string;
     resumo: string;
-    proximosPassos?: string;
+    proximosPassos: string | null;
 }
 
 export interface DB {
     farmacias: Farmacia[];
-    acessos: Acesso[];
+
     playbookTemplates: PlaybookTemplate[];
     playbookRuns: PlaybookRun[];
     playbookRunItens: PlaybookRunItem[];

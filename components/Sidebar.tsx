@@ -11,7 +11,6 @@ const links = [
     { href: '/farmacias', label: 'Farmácias', icon: Store },
     { href: '/tarefas', label: 'Tarefas', icon: CheckSquare },
     { href: '/reunioes', label: 'Reuniões', icon: Calendar },
-    { href: '/acessos', label: 'Acessos', icon: Key },
 ];
 
 export default function Sidebar() {

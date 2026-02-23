@@ -1,0 +1,212 @@
+﻿
+> farmacia-10x-marketing@0.1.0 lint
+> eslint
+
+
+C:\Projeto marketing\app\api\acessos\route.ts
+  24:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\export\route.ts
+  76:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\farmacias\[id]\route.ts
+    5:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   74:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  122:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\farmacias\route.ts
+    5:27  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+   45:10  warning  'mapToSupabase' is defined but never used  @typescript-eslint/no-unused-vars
+   45:30  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  143:19  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\playbooks\items\[id]\route.ts
+  11:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\playbooks\items\route.ts
+  21:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\playbooks\runs\route.ts
+  24:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  64:79  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  89:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\playbooks\templates\route.ts
+  15:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\reunioes\[id]\route.ts
+   4:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  25:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  52:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\reunioes\route.ts
+   6:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  46:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\tarefas\[id]\route.ts
+  11:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\api\tarefas\route.ts
+  24:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\farmacias\[id]\editar\page.tsx
+  26:23  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Projeto marketing\app\farmacias\[id]\editar\page.tsx:26:23
+  24 |
+  25 |
+> 26 |     useEffect(() => { load(); }, [id]);
+     |                       ^^^^ Avoid calling setState() directly within an effect
+  27 |
+  28 |     if (loading) return <PageLoader label="Carregando farm├íciaÔÇª" />;
+  29 |     if (error || !data) return <LoadError message="Farm├ícia n├úo encontrada ou falha ao carregar." onRetry={load} />;  react-hooks/set-state-in-effect
+  26:34  warning  React Hook useEffect has a missing dependency: 'load'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+
+C:\Projeto marketing\app\farmacias\[id]\page.tsx
+    9:41   warning  'Globe' is defined but never used                                @typescript-eslint/no-unused-vars
+    9:48   warning  'DollarSign' is defined but never used                           @typescript-eslint/no-unused-vars
+   12:8    warning  'Link' is defined but never used                                 @typescript-eslint/no-unused-vars
+   28:29   error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   40:10   warning  'SectionCard' is defined but never used                          @typescript-eslint/no-unused-vars
+   40:63   error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   53:50   error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   74:10   warning  'BoolBadge' is defined but never used                            @typescript-eslint/no-unused-vars
+  160:11   warning  'router' is assigned a value but never used                      @typescript-eslint/no-unused-vars
+  330:11   warning  'inputCls' is assigned a value but never used                    @typescript-eslint/no-unused-vars
+  865:85   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  865:103  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Projeto marketing\app\farmacias\page.tsx
+    4:10  warning  'Farmacia' is defined but never used             @typescript-eslint/no-unused-vars
+   55:14  error    Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  173:31  warning  'statusInfo' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Projeto marketing\app\page.tsx
+    9:36  warning  'ExternalLink' is defined but never used                                                                                   @typescript-eslint/no-unused-vars
+   10:3   warning  'TrendingUp' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+   10:15  warning  'Bell' is defined but never used                                                                                           @typescript-eslint/no-unused-vars
+   10:21  warning  'AlertCircle' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+   10:34  warning  'Circle' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+   11:3   warning  'Target' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+   11:11  warning  'Users' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+   11:18  warning  'MapPin' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+   11:26  warning  'ClipboardList' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+   30:7   warning  'statusConfig' is assigned a value but never used                                                                          @typescript-eslint/no-unused-vars
+   62:9   error    Unexpected any. Specify a different type                                                                                   @typescript-eslint/no-explicit-any
+   88:9   error    Unexpected any. Specify a different type                                                                                   @typescript-eslint/no-explicit-any
+  198:6   warning  React Hook useEffect has missing dependencies: 'today' and 'tomorrow'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Projeto marketing\app\reunioes\page.tsx
+    5:19  warning  'Farmacia' is defined but never used      @typescript-eslint/no-unused-vars
+  209:89  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\app\seed\page.tsx
+  26:18  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Projeto marketing\app\tarefas\page.tsx
+    5:18   warning  'Farmacia' is defined but never used                             @typescript-eslint/no-unused-vars
+   62:26   error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  335:126  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  335:135  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Projeto marketing\components\FarmaciaForm.tsx
+    7:16  warning  'Eye' is defined but never used           @typescript-eslint/no-unused-vars
+    7:21  warning  'EyeOff' is defined but never used        @typescript-eslint/no-unused-vars
+   30:55  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  179:23  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Projeto marketing\components\SearchModal.tsx
+    6:63  warning  'Clock' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+    6:70  warning  'AlertTriangle' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+    8:15  warning  'Farmacia' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  150:8   warning  React Hook useCallback has a missing dependency: 'farmacias'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  247:82  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                 react/no-unescaped-entities
+  247:90  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                 react/no-unescaped-entities
+
+C:\Projeto marketing\components\Sidebar.tsx
+  7:34  warning  'Flag' is defined but never used  @typescript-eslint/no-unused-vars
+  7:63  warning  'Home' is defined but never used  @typescript-eslint/no-unused-vars
+  7:74  warning  'Play' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Projeto marketing\components\Topbar.tsx
+   4:8   warning  'Link' is defined but never used            @typescript-eslint/no-unused-vars
+  13:11  warning  'SimpleFarmacia' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Projeto marketing\components\ui\FormButton.tsx
+   4:10  warning  'useEffect' is defined but never used        @typescript-eslint/no-unused-vars
+   4:21  warning  'useState' is defined but never used         @typescript-eslint/no-unused-vars
+  52:11  warning  'isIdle' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Projeto marketing\components\ui\FormMessage.tsx
+  18:11  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-explicit-any
+  53:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Projeto marketing\components\ui\FormMessage.tsx:53:9
+  51 |
+  52 |     useEffect(() => {
+> 53 |         setVisible(true);
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  54 |         if (autoDismiss > 0) {
+  55 |             const t = setTimeout(() => {
+  56 |                 setVisible(false);  react-hooks/set-state-in-effect
+  61:8   warning  React Hook useEffect has a missing dependency: 'onDismiss'. Either include it or remove the dependency array. If 'onDismiss' changes too often, find the parent component that defines it and wrap that definition in useCallback                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             react-hooks/exhaustive-deps
+
+C:\Projeto marketing\contexts\ConfirmContext.tsx
+  5:33  warning  'X' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Projeto marketing\contexts\FarmaciaContext.tsx
+  34:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Projeto marketing\contexts\FarmaciaContext.tsx:34:9
+  32 |     // Busca inicial e recupera├º├úo do localStorage
+  33 |     useEffect(() => {
+> 34 |         refreshFarmacias();
+     |         ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  35 |         const saved = localStorage.getItem('selectedFarmaciaId');
+  36 |         if (saved) {
+  37 |             setSelectedFarmaciaId(saved);  react-hooks/set-state-in-effect
+
+C:\Projeto marketing\contexts\ThemeContext.tsx
+  21:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Projeto marketing\contexts\ThemeContext.tsx:21:13
+  19 |         const savedTheme = localStorage.getItem('theme') as Theme | null;
+  20 |         if (savedTheme) {
+> 21 |             setTheme(savedTheme);
+     |             ^^^^^^^^ Avoid calling setState() directly within an effect
+  22 |             document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+  23 |         } else {
+  24 |             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;  react-hooks/set-state-in-effect
+
+C:\Projeto marketing\contexts\ToastContext.tsx
+  29:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Ô£û 87 problems (46 errors, 41 warnings)
+

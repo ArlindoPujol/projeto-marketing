@@ -16,11 +16,12 @@ export default function EditarFarmaciaPage() {
     function load() {
         setLoading(true);
         setError(false);
-        fetch(`/api/farmacias/${id}`)
+        fetch(`/api/farmacias/${id}`, { cache: 'no-store' })
             .then(res => { if (!res.ok) throw new Error(); return res.json(); })
             .then(d => { setData(d); setLoading(false); })
             .catch(() => { setError(true); setLoading(false); });
     }
+
 
     useEffect(() => { load(); }, [id]);
 

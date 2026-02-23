@@ -13,6 +13,8 @@ export async function PUT(
     if (body.descricao !== undefined) payload.descricao = body.descricao;
     if (body.status !== undefined) payload.status = body.status;
     if (body.vencimento !== undefined) payload.vencimento = body.vencimento;
+    if (body.prioridade !== undefined) payload.prioridade = body.prioridade;
+    if (body.notas !== undefined) payload.notas = body.notas;
 
     const { data, error } = await supabase
         .from("tarefas")
@@ -31,9 +33,12 @@ export async function PUT(
         titulo: data.titulo,
         descricao: data.descricao,
         status: data.status,
+        prioridade: data.prioridade,
         vencimento: data.vencimento,
+        notas: data.notas,
     });
 }
+
 
 export async function DELETE(
     request: Request,

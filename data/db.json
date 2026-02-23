@@ -10,12 +10,6 @@
       "instagram": "@farmacia10x",
       "facebook": "@farmacia10x",
       "googleMyBusiness": "https://share.google/l6x80KKIDfNZlQqAW",
-      "emailGoogle": "farmacia10x@gmail.com",
-      "senhaGoogle": "123456",
-      "loginFacebook": "farmacia10x@gmail.com",
-      "senhaFacebook": "123456",
-      "loginInstagram": "@farmacia10x",
-      "senhaInstagram": "123456",
       "temDelivery": true,
       "faturamentoDeliveryMensal": 5000,
       "jaInvestiuTrafego": true,
@@ -41,12 +35,6 @@
       "instagram": "",
       "facebook": "",
       "googleMyBusiness": "",
-      "emailGoogle": "",
-      "senhaGoogle": "",
-      "loginFacebook": "",
-      "senhaFacebook": "",
-      "loginInstagram": "",
-      "senhaInstagram": "",
       "temDelivery": false,
       "faturamentoDeliveryMensal": null,
       "jaInvestiuTrafego": false,
@@ -62,24 +50,7 @@
       "acessos": []
     }
   ],
-  "acessos": [
-    {
-      "id": "101",
-      "farmaciaId": "1",
-      "tipo": "Meta Ads",
-      "status": "pending",
-      "referenciaCofre": "1Password > Farmacia Central > Meta",
-      "observacao": "Solicitado ao cliente em 19/02"
-    },
-    {
-      "id": "102",
-      "farmaciaId": "2",
-      "tipo": "Google Ads",
-      "status": "ok",
-      "referenciaCofre": "1Password > Drogaria Saude > Google",
-      "observacao": "Acesso total concedido"
-    }
-  ],
+  "acessos": [],
   "playbookTemplates": [
     {
       "id": "tpl-1",

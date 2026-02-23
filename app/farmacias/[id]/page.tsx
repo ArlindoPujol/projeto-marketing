@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import {
     Edit, Trash2, MapPin, User, CheckSquare, Calendar, FileText,
     Plus, TrendingUp, Phone, Instagram, Globe, DollarSign, Store,
-    Clock, Check, Facebook, LayoutDashboard, StickyNote, X, Save
+    Clock, Check, Facebook, LayoutDashboard, StickyNote, X, Save, Shield
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -405,6 +405,12 @@ export default function FarmaciaDetailsPage() {
                                         <InfoField label="UF" value={farmacia.uf} />
                                     </div>
                                     <InfoField label="Endereço" value={farmacia.endereco} icon={MapPin} />
+                                    <InfoField
+                                        label="Status de Acessos"
+                                        value={farmacia.acessosEnviadosWhatsapp ? "Enviados via WhatsApp" : "Não enviados"}
+                                        icon={Shield}
+                                        isBlue={!!farmacia.acessosEnviadosWhatsapp}
+                                    />
                                 </div>
                             </div>
 

@@ -26,8 +26,10 @@ export async function GET(request: Request) {
             farmaciaId: row.farmacia_id,
             titulo: row.titulo ?? "",
             descricao: row.descricao ?? "",
-            status: row.status ?? "pendente",
+            status: row.status ?? "todo",
+            prioridade: row.prioridade ?? "medium",
             vencimento: row.vencimento ?? null,
+            notas: row.notas ?? "",
         }))
     );
 }
@@ -41,8 +43,10 @@ export async function POST(request: Request) {
             farmacia_id: body.farmaciaId,
             titulo: body.titulo,
             descricao: body.descricao ?? "",
-            status: body.status ?? "pendente",
+            status: body.status ?? "todo",
+            prioridade: body.prioridade ?? "medium",
             vencimento: body.vencimento ?? null,
+            notas: body.notas ?? "",
         })
         .select("*")
         .single();
@@ -57,6 +61,9 @@ export async function POST(request: Request) {
         titulo: data.titulo,
         descricao: data.descricao,
         status: data.status,
+        prioridade: data.prioridade,
         vencimento: data.vencimento,
+        notas: data.notas,
     });
 }
+
