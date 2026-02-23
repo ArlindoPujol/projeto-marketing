@@ -1,0 +1,46 @@
+﻿Ôû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 3.7s
+  Running TypeScript ...
+node.exe : Failed to compile.
+No linha:1 caractere:1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpeci 
+   fied: (Failed to compile.:String)   
+  [], RemoteException
+    + FullyQualifiedErrorId : NativeCo 
+   mmandError
+ 
+
+./app/api/seed/route.ts:28:17
+Type error: Object literal may only 
+specify known properties, and 
+'acessos' does not exist in type 
+'Farmacia'.
+
+[0m [90m 26 |[39m                 
+prioridade[33m:[39m 
+[32m'high'[39m[33m,[39m
+ [90m 27 |[39m                 
+notas[33m:[39m [32m'Cliente novo, 
+focar em configurar Meta 
+Ads.'[39m[33m,[39m
+[31m[1m>[22m[39m[90m 28 |[39m    
+             acessos[33m:[39m 
+[][33m,[39m [90m// filled 
+separately or here?[39m
+ [90m    |[39m                 
+[31m[1m^[22m[39m
+ [90m 29 |[39m             
+}[33m,[39m
+ [90m 30 |[39m             {
+ [90m 31 |[39m                 
+id[33m:[39m 
+[32m'2'[39m[33m,[39m[0m
+Next.js build worker exited with code: 
+1 and signal: null

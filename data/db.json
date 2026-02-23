@@ -1,0 +1,261 @@
+{
+  "farmacias": [
+    {
+      "nomeFarmacia": "Farmácia10x",
+      "responsavelNome": "Giovanni",
+      "whatsapp": "66999368242",
+      "cidade": "São Paulo",
+      "uf": "SP",
+      "endereco": "Rua Veneza, 365",
+      "instagram": "@farmacia10x",
+      "facebook": "@farmacia10x",
+      "googleMyBusiness": "https://share.google/l6x80KKIDfNZlQqAW",
+      "emailGoogle": "farmacia10x@gmail.com",
+      "senhaGoogle": "123456",
+      "loginFacebook": "farmacia10x@gmail.com",
+      "senhaFacebook": "123456",
+      "loginInstagram": "@farmacia10x",
+      "senhaInstagram": "123456",
+      "temDelivery": true,
+      "faturamentoDeliveryMensal": 5000,
+      "jaInvestiuTrafego": true,
+      "quemFaziaTrafego": "Arlindo",
+      "quantoInvestia": 1500,
+      "temSite": false,
+      "siteUrl": "",
+      "temEcommerce": false,
+      "notas": "",
+      "statusMarketing": "waiting_access",
+      "prioridade": "medium",
+      "id": "442dd56e-3b1c-4bb8-b191-1604fda57304",
+      "acessos": [],
+      "numeroPedidos": "150"
+    },
+    {
+      "nomeFarmacia": "ZZZ SUPABASE TESTE",
+      "responsavelNome": "Supabese",
+      "whatsapp": "11999368242",
+      "cidade": "São Paulo",
+      "uf": "SP",
+      "endereco": "",
+      "instagram": "",
+      "facebook": "",
+      "googleMyBusiness": "",
+      "emailGoogle": "",
+      "senhaGoogle": "",
+      "loginFacebook": "",
+      "senhaFacebook": "",
+      "loginInstagram": "",
+      "senhaInstagram": "",
+      "temDelivery": false,
+      "faturamentoDeliveryMensal": null,
+      "jaInvestiuTrafego": false,
+      "quemFaziaTrafego": "",
+      "quantoInvestia": null,
+      "temSite": false,
+      "siteUrl": "",
+      "temEcommerce": false,
+      "notas": "",
+      "statusMarketing": "waiting_access",
+      "prioridade": "medium",
+      "id": "9e5bcc8c-0cad-4a21-bf52-4f0455217047",
+      "acessos": []
+    }
+  ],
+  "acessos": [
+    {
+      "id": "101",
+      "farmaciaId": "1",
+      "tipo": "Meta Ads",
+      "status": "pending",
+      "referenciaCofre": "1Password > Farmacia Central > Meta",
+      "observacao": "Solicitado ao cliente em 19/02"
+    },
+    {
+      "id": "102",
+      "farmaciaId": "2",
+      "tipo": "Google Ads",
+      "status": "ok",
+      "referenciaCofre": "1Password > Drogaria Saude > Google",
+      "observacao": "Acesso total concedido"
+    }
+  ],
+  "playbookTemplates": [
+    {
+      "id": "tpl-1",
+      "titulo": "Setup Meta Ads",
+      "categoria": "Setup",
+      "descricao": "Configuração inicial de conta de anúncios e pixel.",
+      "itens": [
+        {
+          "id": "i1",
+          "titulo": "Criar Business Manager",
+          "obrigatorio": true,
+          "ordem": 1
+        },
+        {
+          "id": "i2",
+          "titulo": "Configurar Pixel",
+          "obrigatorio": true,
+          "ordem": 2
+        },
+        {
+          "id": "i3",
+          "titulo": "Verificar Domínio",
+          "obrigatorio": true,
+          "ordem": 3
+        }
+      ]
+    },
+    {
+      "id": "tpl-2",
+      "titulo": "Setup Google Ads",
+      "categoria": "Setup",
+      "descricao": "Configuração inicial de conta Google Ads.",
+      "itens": [
+        {
+          "id": "i4",
+          "titulo": "Criar Conta",
+          "obrigatorio": true,
+          "ordem": 1
+        },
+        {
+          "id": "i5",
+          "titulo": "Configurar Conversões",
+          "obrigatorio": true,
+          "ordem": 2
+        }
+      ]
+    },
+    {
+      "id": "tpl-3",
+      "titulo": "Otimização GMB",
+      "categoria": "Otimização",
+      "descricao": "Melhorar perfil no Google Meu Negócio.",
+      "itens": [
+        {
+          "id": "i6",
+          "titulo": "Atualizar horário",
+          "obrigatorio": true,
+          "ordem": 1
+        },
+        {
+          "id": "i7",
+          "titulo": "Responder avaliações",
+          "obrigatorio": false,
+          "ordem": 2
+        }
+      ]
+    },
+    {
+      "id": "tpl-4",
+      "titulo": "Instagram Base",
+      "categoria": "Social",
+      "descricao": "Arrumar bio e destaques.",
+      "itens": [
+        {
+          "id": "i8",
+          "titulo": "Bio estratégica",
+          "obrigatorio": true,
+          "ordem": 1
+        },
+        {
+          "id": "i9",
+          "titulo": "Destaques padrão",
+          "obrigatorio": true,
+          "ordem": 2
+        }
+      ]
+    },
+    {
+      "id": "tpl-5",
+      "titulo": "WhatsApp Business",
+      "categoria": "Setup",
+      "descricao": "Configurar catálogo e mensagens automáticas.",
+      "itens": [
+        {
+          "id": "i10",
+          "titulo": "Catálogo de produtos",
+          "obrigatorio": false,
+          "ordem": 1
+        },
+        {
+          "id": "i11",
+          "titulo": "Mensagem de saudação",
+          "obrigatorio": true,
+          "ordem": 2
+        }
+      ]
+    },
+    {
+      "id": "tpl-6",
+      "titulo": "Revisão Mensal",
+      "categoria": "Rotina",
+      "descricao": "Checklist de fechamento de mês.",
+      "itens": [
+        {
+          "id": "i12",
+          "titulo": "Relatório de Ads",
+          "obrigatorio": true,
+          "ordem": 1
+        },
+        {
+          "id": "i13",
+          "titulo": "Relatório de Vendas",
+          "obrigatorio": true,
+          "ordem": 2
+        }
+      ]
+    }
+  ],
+  "playbookRuns": [],
+  "playbookRunItens": [],
+  "tarefas": [
+    {
+      "farmaciaId": "442dd56e-3b1c-4bb8-b191-1604fda57304",
+      "titulo": "Fazer campanha",
+      "vencimento": "2026-02-18",
+      "prioridade": "medium",
+      "status": "done",
+      "descricao": "",
+      "id": "778cc353-cd8e-46b3-9d1c-cd1f6d64d431"
+    },
+    {
+      "farmaciaId": "442dd56e-3b1c-4bb8-b191-1604fda57304",
+      "titulo": "Fazer página",
+      "vencimento": "2026-02-20",
+      "prioridade": "medium",
+      "status": "done",
+      "descricao": "",
+      "id": "9491a508-83b1-4cc2-8384-3a132634f69e"
+    },
+    {
+      "farmaciaId": "442dd56e-3b1c-4bb8-b191-1604fda57304",
+      "titulo": "Fazer site",
+      "vencimento": "2026-02-23",
+      "prioridade": "medium",
+      "status": "done",
+      "descricao": "",
+      "id": "9db3f1c3-6aa8-41e6-9d4b-cad45f3ff134"
+    },
+    {
+      "farmaciaId": "442dd56e-3b1c-4bb8-b191-1604fda57304",
+      "titulo": "Ajustar o Google Meu negócio",
+      "vencimento": "2026-02-24",
+      "prioridade": "medium",
+      "status": "todo",
+      "descricao": "",
+      "id": "be5ca864-ea5b-4fed-9ca8-e93d87f43da7"
+    }
+  ],
+  "reunioes": [
+    {
+      "farmaciaId": "442dd56e-3b1c-4bb8-b191-1604fda57304",
+      "data": "2026-02-21",
+      "pauta": "trafego pago",
+      "resumo": "",
+      "proximosPassos": "",
+      "id": "44a9dae7-31e0-4599-8417-54581c18b54d"
+    }
+  ]
+}
