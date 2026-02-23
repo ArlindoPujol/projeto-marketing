@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
     Search, Filter, Store, ChevronRight, Activity, Plus,
-    Calendar, CheckSquare, AlertTriangle, Pencil, Trash2, Phone
+    Calendar, CheckSquare, AlertTriangle, Pencil, Trash2, Phone,
+    ShieldCheck, ShieldAlert, MapPin, Clock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useConfirm } from '@/contexts/ConfirmContext';
@@ -140,7 +141,7 @@ export default function FarmaciasPage() {
                     </Link>
                 </div>
             ) : (
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {filtered.map(farmacia => {
                         const farmaciaTarefas = tarefas.filter(t => t.farmaciaId === farmacia.id);
                         const totalTarefas = farmaciaTarefas.length;
@@ -164,161 +165,140 @@ export default function FarmaciasPage() {
                             .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())[0];
                         const reuniaoRef = proximaReuniao || ultimaReuniao;
 
-                        const borderClass = temAtrasada
-                            ? 'border-red-400/60 shadow-[0_0_0_1px_rgba(239,68,68,0.15),0_2px_12px_rgba(239,68,68,0.08)]'
-                            : temProxima
-                                ? 'border-orange-400/50 shadow-[0_0_0_1px_rgba(251,146,60,0.15),0_2px_12px_rgba(251,146,60,0.06)]'
-                                : 'border-black/[0.04]';
-
-                        const statusInfo = statusConfig[farmacia.statusMarketing || ''] ?? { label: 'Ativa', cls: 'bg-blue-500/5 text-blue-600 border-blue-500/15' };
                         const isDeleting = deletingId === farmacia.id;
 
                         return (
                             <Link key={farmacia.id} href={`/farmacias/${farmacia.id}`} className="group">
                                 <div className={cn(
-                                    "relative flex flex-col gap-3 p-4 rounded-2xl bg-white border shadow-sm overflow-hidden transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-0.5",
-                                    borderClass,
+                                    "relative flex flex-col h-full rounded-3xl transition-all duration-500 overflow-hidden",
+                                    /* Base */
+                                    "bg-white dark:bg-[#1C1C1E] border border-black/[0.04] dark:border-white/[0.06]",
+                                    "shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.12)]",
+                                    "dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.5)]",
+                                    "hover:-translate-y-1.5",
+                                    /* Alertas coloridos */
+                                    temAtrasada && "ring-1 ring-red-500/20 shadow-red-500/5 hover:shadow-red-500/10",
+                                    temProxima && "ring-1 ring-orange-500/20 shadow-orange-500/5 hover:shadow-orange-500/10",
                                     isDeleting && "opacity-50 pointer-events-none"
                                 )}>
-                                    {/* Faixa de alerta no topo */}
-                                    {(temAtrasada || temProxima) && (
-                                        <div className={cn(
-                                            "absolute top-0 left-0 right-0 h-0.5",
-                                            temAtrasada
-                                                ? "bg-gradient-to-r from-red-400 via-red-500 to-red-400"
-                                                : "bg-gradient-to-r from-orange-300 via-orange-400 to-orange-300"
-                                        )} />
-                                    )}
 
-                                    {/* Header: nome + cidade/UF + ícone */}
-                                    <div className="flex items-start justify-between gap-2 pt-0.5">
-                                        <div className="flex-1 min-w-0">
-                                            {/* Nome da farmácia — destaque principal */}
-                                            <h3 className="text-[15px] font-black text-gray-900 dark:text-white leading-tight uppercase tracking-tight truncate mb-1">
-                                                {farmacia.nomeFarmacia}
-                                            </h3>
-                                            {/* Cidade + UF abaixo do nome */}
-                                            <div className="flex items-center gap-1.5">
-                                                <Activity className={cn("h-2.5 w-2.5 shrink-0",
-                                                    temAtrasada ? "text-red-400" : temProxima ? "text-orange-400" : "text-blue-400"
-                                                )} />
-                                                <span className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 truncate">
-                                                    {farmacia.cidade}{farmacia.uf ? ` · ${farmacia.uf}` : ''}
-                                                </span>
+                                    {/* Faixa Superior de Status - Premium */}
+                                    <div className={cn(
+                                        "h-1 w-full",
+                                        temAtrasada ? "bg-red-500" :
+                                            temProxima ? "bg-orange-500" :
+                                                farmacia.acessosEnviadosWhatsapp ? "bg-blue-500" : "bg-transparent"
+                                    )} />
+
+                                    <div className="p-6 flex flex-col gap-5">
+                                        {/* Header: Nome e Local */}
+                                        <div className="flex items-start justify-between">
+                                            <div className="space-y-1">
+                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight tracking-tight uppercase">
+                                                    {farmacia.nomeFarmacia}
+                                                </h3>
+                                                <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                                                    <MapPin className="h-3 w-3" />
+                                                    <span>{farmacia.cidade}{farmacia.uf ? ` · ${farmacia.uf}` : ''}</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Badge de Acessos - O ponto principal solicitado */}
+                                            <div className={cn(
+                                                "shrink-0 flex items-center justify-center p-2 rounded-2xl border transition-all duration-300",
+                                                farmacia.acessosEnviadosWhatsapp
+                                                    ? "bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 shadow-[0_0_12px_-4px_rgba(59,130,246,0.5)]"
+                                                    : "bg-black/[0.02] dark:bg-white/5 border-black/[0.05] dark:border-white/10 text-gray-300 dark:text-gray-600"
+                                            )} title={farmacia.acessosEnviadosWhatsapp ? "Acessos Enviados" : "Acessos Pendentes"}>
+                                                {farmacia.acessosEnviadosWhatsapp ? <ShieldCheck className="h-4 w-4" /> : <ShieldAlert className="h-4 w-4" />}
                                             </div>
                                         </div>
-                                        <div className={cn(
-                                            "shrink-0 p-1.5 rounded-lg border",
-                                            temAtrasada ? "bg-red-500/8 border-red-400/25" :
-                                                temProxima ? "bg-orange-500/8 border-orange-400/25" :
-                                                    "bg-blue-500/8 border-blue-400/20"
-                                        )}>
-                                            <Store className={cn("h-3.5 w-3.5",
-                                                temAtrasada ? "text-red-500" :
-                                                    temProxima ? "text-orange-500" :
-                                                        "text-blue-500"
-                                            )} />
-                                        </div>
-                                    </div>
 
-                                    {/* Alertas */}
-                                    {temAtrasada && (
-                                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-red-500/[0.05] border border-red-400/15 rounded-lg">
-                                            <AlertTriangle className="h-3 w-3 text-red-500 shrink-0" />
-                                            <span className="text-[8px] font-black uppercase tracking-widest text-red-500">Tarefa em atraso</span>
-                                        </div>
-                                    )}
-                                    {temProxima && !temAtrasada && (
-                                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-orange-500/[0.05] border border-orange-400/15 rounded-lg">
-                                            <AlertTriangle className="h-3 w-3 text-orange-500 shrink-0" />
-                                            <span className="text-[8px] font-black uppercase tracking-widest text-orange-500">Vence em breve</span>
-                                        </div>
-                                    )}
-
-                                    {/* Progresso de tarefas */}
-                                    <div className="space-y-1">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">Tarefas</span>
-                                            <span className="text-[9px] font-bold text-gray-500">{progresso}%</span>
-                                        </div>
-                                        <div className="h-0.5 w-full bg-black/[0.05] rounded-full overflow-hidden">
-                                            <div
-                                                className={cn(
-                                                    "h-full rounded-full transition-all duration-700",
-                                                    temAtrasada ? "bg-red-400" :
-                                                        temProxima ? "bg-orange-400" :
-                                                            "bg-blue-500"
-                                                )}
-                                                style={{ width: `${progresso}%` }}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Info: tarefas */}
-                                    <div className="flex items-center gap-2">
-                                        <CheckSquare className={cn("h-3 w-3 shrink-0",
-                                            temAtrasada ? "text-red-400" : temProxima ? "text-orange-400" : "text-gray-400"
-                                        )} />
-                                        <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-300">
-                                            {totalTarefas === 0
-                                                ? 'Sem tarefas cadastradas'
-                                                : `${concluidasTarefas} de ${totalTarefas} tarefas concluída${concluidasTarefas !== 1 ? 's' : ''}`
-                                            }
-                                        </span>
-                                    </div>
-
-                                    {/* Info: reunião */}
-                                    {reuniaoRef && (
-                                        <div className="flex items-center gap-2">
-                                            <Calendar className="h-3 w-3 text-blue-400 shrink-0" />
-                                            <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-300">
-                                                {proximaReuniao ? 'Próxima: ' : 'Última: '}
-                                                <span className={cn("font-bold", proximaReuniao ? "text-blue-500" : "text-gray-500")}>
-                                                    {new Date(reuniaoRef.data + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                                        {/* Pills de Status */}
+                                        <div className="flex flex-wrap gap-2">
+                                            {temAtrasada && (
+                                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-red-500 text-white text-[8px] font-black uppercase tracking-widest">
+                                                    <AlertTriangle className="h-2.5 w-2.5" /> Atraso
                                                 </span>
+                                            )}
+                                            {temProxima && !temAtrasada && (
+                                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-orange-500 text-white text-[8px] font-black uppercase tracking-widest">
+                                                    <Clock className="h-2.5 w-2.5" /> Próximo
+                                                </span>
+                                            )}
+                                            <span className={cn(
+                                                "px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border",
+                                                farmacia.acessosEnviadosWhatsapp
+                                                    ? "bg-blue-500/5 text-blue-600 dark:text-blue-400 border-blue-500/10"
+                                                    : "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-600 border-gray-200 dark:border-white/5"
+                                            )}>
+                                                {farmacia.acessosEnviadosWhatsapp ? 'Acessos OK' : 'Sem Acesso'}
                                             </span>
                                         </div>
-                                    )}
 
-                                    {/* Info: WhatsApp */}
-                                    {farmacia.whatsapp && (
-                                        <div className="flex items-center gap-2">
-                                            <Phone className="h-3 w-3 text-gray-400 shrink-0" />
-                                            <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-300 truncate">{farmacia.whatsapp}</span>
-                                        </div>
-                                    )}
-
-                                    {/* Rodapé: responsável + ações + ver */}
-                                    <div className="flex items-center justify-between pt-2 border-t border-black/[0.05] dark:border-white/[0.07]">
-                                        <span className="text-[9px] font-bold uppercase tracking-[0.10em] text-gray-500 dark:text-gray-400 truncate mr-2">
-                                            {farmacia.responsavelNome || 'Resp. não definido'}
-                                        </span>
-
-                                        <div className="flex items-center gap-1 shrink-0">
-                                            {/* Editar */}
-                                            <Link
-                                                href={`/farmacias/${farmacia.id}/editar`}
-                                                onClick={e => e.stopPropagation()}
-                                                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider text-gray-400 hover:text-blue-600 hover:bg-blue-500/5 border border-transparent hover:border-blue-500/15 transition-all duration-200"
-                                            >
-                                                <Pencil className="h-2.5 w-2.5" />
-                                                Editar
-                                            </Link>
-
-                                            {/* Excluir */}
-                                            <button
-                                                onClick={e => handleDelete(e, farmacia.id, farmacia.nomeFarmacia)}
-                                                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider text-gray-400 hover:text-red-600 hover:bg-red-500/5 border border-transparent hover:border-red-500/15 transition-all duration-200"
-                                            >
-                                                <Trash2 className="h-2.5 w-2.5" />
-                                                Excluir
-                                            </button>
-
-                                            {/* Ver */}
-                                            <div className="flex items-center gap-0.5 text-gray-400 group-hover:text-blue-500 transition-colors pl-1 border-l border-black/[0.05]">
-                                                <span className="text-[8px] font-bold uppercase tracking-widest">Ver</span>
-                                                <ChevronRight className="h-3 w-3" />
+                                        {/* Tasks Section */}
+                                        <div className="space-y-3 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.03] dark:border-white/[0.05]">
+                                            <div className="flex justify-between items-end">
+                                                <div className="flex items-center gap-1.5 text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                                                    <CheckSquare className="h-3 w-3" />
+                                                    <span>Progresso</span>
+                                                </div>
+                                                <span className="text-[11px] font-bold text-gray-700 dark:text-gray-300">{progresso}%</span>
                                             </div>
+                                            <div className="h-1.5 w-full bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
+                                                <div
+                                                    className={cn(
+                                                        "h-full rounded-full transition-all duration-1000",
+                                                        temAtrasada ? "bg-red-500" : temProxima ? "bg-orange-500" : "bg-blue-500"
+                                                    )}
+                                                    style={{ width: `${progresso}%` }}
+                                                />
+                                            </div>
+                                            <p className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 tracking-tight">
+                                                {totalTarefas === 0 ? 'Sem tarefas ativas' : `${concluidasTarefas}/${totalTarefas} finalizadas`}
+                                            </p>
+                                        </div>
+
+                                        {/* Bottom Data */}
+                                        <div className="space-y-2 mt-auto">
+                                            {reuniaoRef && (
+                                                <div className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                                                    <Calendar className="h-3.5 w-3.5 text-blue-500/70" />
+                                                    <span>
+                                                        {proximaReuniao ? 'Próxima: ' : 'Última: '}
+                                                        <span className="font-bold text-gray-900 dark:text-gray-200">
+                                                            {new Date(reuniaoRef.data + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {farmacia.whatsapp && (
+                                                <div className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                                                    <Phone className="h-3.5 w-3.5 text-gray-400 dark:text-gray-600" />
+                                                    <span className="tabular-nums">{farmacia.whatsapp}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Action Footer */}
+                                    <div className="mt-auto px-6 py-4 flex items-center justify-between bg-black/[0.01] dark:bg-white/[0.01] border-t border-black/[0.03] dark:border-white/[0.05]">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center text-[10px] font-bold text-blue-600 dark:text-blue-400 border border-blue-500/10">
+                                                {farmacia.responsavelNome?.substring(0, 1).toUpperCase() || 'R'}
+                                            </div>
+                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{farmacia.responsavelNome?.split(' ')[0] || 'Resp.'}</span>
+                                        </div>
+
+                                        <div className="flex items-center gap-1">
+                                            <Link href={`/farmacias/${farmacia.id}/editar`} onClick={e => e.stopPropagation()} className="p-2 text-gray-400 hover:text-blue-500 transition-colors">
+                                                <Pencil className="h-3.5 w-3.5" />
+                                            </Link>
+                                            <button onClick={e => handleDelete(e, farmacia.id, farmacia.nomeFarmacia)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                                                <Trash2 className="h-3.5 w-3.5" />
+                                            </button>
+                                            <div className="w-px h-3 bg-black/5 dark:bg-white/5 mx-1" />
+                                            <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-700 group-hover:translate-x-1 transition-transform" />
                                         </div>
                                     </div>
                                 </div>
