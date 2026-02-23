@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ToastProvider } from '@/contexts/ToastContext';
 import { ConfirmProvider } from '@/contexts/ConfirmContext';
 import Sidebar from './Sidebar';
+import Topbar from './Topbar';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -22,7 +23,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                             opacity-0 dark:opacity-[0.15]
                             bg-primary
                             animate-glow transition-all duration-1000" />
-                                
+
                                 <div className="absolute bottom-[0%] right-[-10%] w-[45%] h-[45%] rounded-full blur-[130px]
                             opacity-0 dark:opacity-[0.12]
                             bg-purple-600
@@ -40,7 +41,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                                         backgroundSize: '40px 40px',
                                     }}
                                 />
-                                
+
                                 {/* Noise Overlayer for texture */}
                                 <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03] pointer-events-none mix-blend-overlay"
                                     style={{
