@@ -39,8 +39,8 @@
   color-scheme: dark;
 
   /* Apple Midnight Dark Palette */
-  --background: #000000;
-  --background-raised: #161617;
+  --background: #0B0B0C;
+  --background-raised: #1C1C1E;
 
   /* Typography */
   --foreground: #F5F5F7;
@@ -49,7 +49,7 @@
   --foreground-4: #424245;
 
   /* Surfaces Glass */
-  --card: rgba(28, 28, 30, 0.8);
+  --card: rgba(30, 30, 32, 0.95);
   --card-foreground: #F5F5F7;
   --surface: rgba(44, 44, 46, 0.6);
 

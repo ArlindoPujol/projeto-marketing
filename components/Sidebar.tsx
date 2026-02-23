@@ -26,7 +26,7 @@ export default function Sidebar() {
                     </div>
                     <div>
                         <span className="text-lg font-bold tracking-tight block leading-none">Farmácia10x</span>
-                        <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mt-1 block">Enterprise Control</span>
+
                     </div>
                 </div>
             </div>

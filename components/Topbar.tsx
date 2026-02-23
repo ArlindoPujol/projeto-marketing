@@ -87,16 +87,7 @@ export default function Topbar() {
                             </button>
                         </div>
 
-                        {/* Perfil Compacto */}
-                        <div className="flex items-center gap-3 pl-2">
-                            <div className="hidden sm:block text-right">
-                                <p className="text-[11px] font-bold leading-tight">Arlindo Pujol</p>
-                                <p className="text-[9px] font-medium opacity-30">Administrador</p>
-                            </div>
-                            <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/10 flex items-center justify-center text-primary font-bold text-xs ring-2 ring-white dark:ring-black">
-                                AP
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </header>

@@ -21,7 +21,7 @@ interface Props { initialData?: Farmacia; }
 // ─────────────────────────────────────────────────────────
 
 const inputCls =
-    "w-full bg-black/[0.02] border border-black/[0.04] rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 placeholder:text-gray-300 outline-none focus:border-blue-400/50 transition-colors";
+    "w-full bg-black/[0.02] dark:bg-white/[0.05] border border-black/[0.04] dark:border-white/[0.1] rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 dark:text-gray-100 placeholder:text-gray-300 dark:placeholder:text-gray-600 outline-none focus:border-blue-400/50 transition-colors";
 
 function Label({ children }: { children: React.ReactNode }) {
     return <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400 mb-1.5 block">{children}</label>;
@@ -29,9 +29,9 @@ function Label({ children }: { children: React.ReactNode }) {
 
 function SectionHeader({ icon: Icon, title }: { icon: any; title: string }) {
     return (
-        <div className="flex items-center gap-2 pb-3 mb-4 border-b border-black/[0.04]">
+        <div className="flex items-center gap-2 pb-3 mb-4 border-b border-black/[0.04] dark:border-white/[0.08]">
             <Icon className="h-3.5 w-3.5 text-blue-500" />
-            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500">{title}</span>
+            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">{title}</span>
         </div>
     );
 }
@@ -41,12 +41,12 @@ function Toggle({ value, onTrue, onFalse }: { value: boolean; onTrue: () => void
         <div className="flex bg-black/[0.02] border border-black/[0.04] p-0.5 rounded-lg w-fit mt-1.5">
             <button type="button" onClick={onTrue}
                 className={cn("px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all",
-                    value ? "bg-white text-blue-600 shadow-sm" : "text-gray-400 hover:text-gray-600")}>
+                    value ? "bg-white dark:bg-white/15 text-blue-600 dark:text-blue-400 shadow-sm" : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-200")}>
                 Sim
             </button>
             <button type="button" onClick={onFalse}
                 className={cn("px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all",
-                    !value ? "bg-white text-gray-700 shadow-sm" : "text-gray-400 hover:text-gray-600")}>
+                    !value ? "bg-white dark:bg-white/15 text-gray-700 dark:text-gray-200 shadow-sm" : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-200")}>
                 Não
             </button>
         </div>
@@ -192,7 +192,7 @@ export default function FarmaciaForm({ initialData }: Props) {
             <div className="flex items-center justify-between">
                 <div>
                     <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-1">Farmácias</p>
-                    <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+                    <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                         {initialData ? 'Editar Farmácia' : 'Cadastrar Nova Farmácia'}
                     </h2>
                 </div>
@@ -281,8 +281,8 @@ export default function FarmaciaForm({ initialData }: Props) {
                             <Shield className="h-4 w-4 text-green-600" />
                         </div>
                         <div>
-                            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500 block mb-0.5">Controle de Acessos</span>
-                            <h3 className="text-sm font-bold text-gray-800 tracking-tight">Os dados de acesso foram enviados via WhatsApp?</h3>
+                            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400 block mb-0.5">Controle de Acessos</span>
+                            <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200 tracking-tight">Os dados de acesso foram enviados via WhatsApp?</h3>
                         </div>
                     </div>
 

@@ -40,9 +40,9 @@ interface DiagEntry { id: string; data: string; texto: string; }
 function SectionCard({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) {
     return (
         <div className="glass-card rounded-2xl overflow-hidden">
-            <div className="px-6 py-3 border-b border-black/[0.04] flex items-center gap-2">
+            <div className="px-6 py-3 border-b border-black/[0.04] dark:border-white/[0.08] flex items-center gap-2">
                 <Icon className="h-3.5 w-3.5 text-blue-500" />
-                <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500">{title}</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">{title}</span>
             </div>
             <div className="px-6 grid grid-cols-1 md:grid-cols-2">{children}</div>
         </div>
@@ -54,16 +54,16 @@ function InfoField({ label, value, icon: Icon, isLink, isBlue, fullWidth }: {
 }) {
     const display = value || '—';
     return (
-        <div className={cn("flex flex-col gap-1.5 py-4 border-b border-black/[0.04] last:border-0", fullWidth && "col-span-2")}>
+        <div className={cn("flex flex-col gap-1.5 py-4 border-b border-black/[0.04] dark:border-white/[0.08] last:border-0", fullWidth && "col-span-2")}>
             <div className="flex items-center gap-1.5">
-                {Icon && <Icon className="h-3 w-3 text-gray-300" />}
-                <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400">{label}</span>
+                {Icon && <Icon className="h-3 w-3 text-gray-300 dark:text-gray-600" />}
+                <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400 dark:text-gray-500">{label}</span>
             </div>
             {isLink && value ? (
                 <a href={value.startsWith('http') ? value : `https://${value}`} target="_blank" rel="noopener noreferrer"
                     className="text-sm font-semibold text-blue-500 hover:underline truncate">{display}</a>
             ) : (
-                <span className={cn("text-sm font-semibold tracking-tight", isBlue ? "text-blue-600" : "text-gray-800", !value && "text-gray-300 font-normal italic")}>
+                <span className={cn("text-sm font-semibold tracking-tight", isBlue ? "text-blue-600 dark:text-blue-400" : "text-gray-800 dark:text-gray-100", !value && "text-gray-300 dark:text-gray-700 font-normal italic")}>
                     {display}
                 </span>
             )}
@@ -99,7 +99,7 @@ function ReuniaoForm({
     const [resumo, setResumo] = useState(inicial?.resumo || '');
     const [proximosPassos, setProximosPassos] = useState(inicial?.proximosPassos || '');
 
-    const inputCls = "w-full bg-black/[0.02] border border-black/[0.05] rounded-xl px-4 py-3 text-sm font-medium text-gray-700 placeholder:text-gray-300 focus:outline-none focus:border-blue-400 transition-colors";
+    const inputCls = "w-full bg-black/[0.02] dark:bg-white/[0.05] border border-black/[0.05] dark:border-white/[0.1] rounded-xl px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-200 placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-blue-400 transition-colors";
 
     return (
         <div className="glass-card rounded-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
@@ -355,7 +355,7 @@ export default function FarmaciaDetailsPage() {
             {/* Header */}
             <div className="flex items-end justify-between gap-4">
                 <div className="space-y-0.5">
-                    <h1 className="text-2xl font-bold tracking-tight text-gray-900 leading-none">{farmacia.nomeFarmacia}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white leading-none">{farmacia.nomeFarmacia}</h1>
                     <div className="flex items-center gap-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.1em]">
                         <MapPin className="h-3 w-3 text-blue-400" />
                         <span>{farmacia.cidade}{farmacia.uf ? `, ${farmacia.uf}` : ''}</span>
@@ -364,14 +364,14 @@ export default function FarmaciaDetailsPage() {
             </div>
 
             {/* Abas */}
-            <div className="flex items-center gap-1 bg-black/[0.02] p-1 rounded-2xl border border-black/[0.04] w-fit">
+            <div className="flex items-center gap-1 bg-black/[0.02] dark:bg-white/[0.03] p-1 rounded-2xl border border-black/[0.04] dark:border-white/[0.08] w-fit">
                 {(Object.keys(tabLabels) as Tab[]).map((tab) => {
                     const Icon = tabIcons[tab];
                     const isActive = activeTab === tab;
                     return (
                         <button key={tab} onClick={() => setActiveTab(tab)} className={cn(
                             "flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-[0.08em] transition-all duration-300",
-                            isActive ? "bg-white text-blue-600 shadow-sm border border-black/[0.04]" : "text-gray-400 hover:text-gray-700"
+                            isActive ? "bg-white dark:bg-white/10 text-blue-600 dark:text-white shadow-sm border border-black/[0.04] dark:border-white/10" : "text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                         )}>
                             <Icon className={cn("h-3 w-3", isActive ? "text-blue-500" : "opacity-40")} />
                             {tabLabels[tab]}
