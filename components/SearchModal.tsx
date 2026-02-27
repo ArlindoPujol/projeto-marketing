@@ -24,12 +24,6 @@ const typeConfig = {
     reuniao: { label: 'Reuniões', icon: Calendar, color: 'text-purple-500' },
 };
 
-const prioLabel: Record<string, string> = { high: 'Alta', medium: 'Média', low: 'Baixa' };
-const prioCls: Record<string, string> = {
-    high: 'bg-red-500/10 text-red-500 border-red-500/20',
-    medium: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-    low: 'bg-gray-400/10 text-gray-500 border-gray-300/40',
-};
 
 /* ── hook: atalho de teclado ──────────────────────── */
 export function useSearchModal() {
@@ -118,12 +112,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
                         href: `/tarefas`,
                         badge: overdue
                             ? { label: 'Atrasada', cls: 'bg-red-500/10 text-red-500 border-red-500/20' }
-                            : {
-                                label: prioLabel[t.prioridade === 'Alta' || t.prioridade === 'high' ? 'high' :
-                                    t.prioridade === 'Baixa' || t.prioridade === 'low' ? 'low' : 'medium'],
-                                cls: prioCls[t.prioridade === 'Alta' || t.prioridade === 'high' ? 'high' :
-                                    t.prioridade === 'Baixa' || t.prioridade === 'low' ? 'low' : 'medium']
-                            },
+                            : undefined,
                     });
                 });
 

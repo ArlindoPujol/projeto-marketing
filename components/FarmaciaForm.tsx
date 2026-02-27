@@ -21,32 +21,32 @@ interface Props { initialData?: Farmacia; }
 // ─────────────────────────────────────────────────────────
 
 const inputCls =
-    "w-full bg-black/[0.02] dark:bg-white/[0.05] border border-black/[0.04] dark:border-white/[0.1] rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 dark:text-gray-100 placeholder:text-gray-300 dark:placeholder:text-gray-600 outline-none focus:border-blue-400/50 transition-colors";
+    "w-full bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.12] rounded-xl px-5 py-3.5 text-base font-bold text-foreground placeholder:text-foreground-quaternary outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 transition-all";
 
 function Label({ children }: { children: React.ReactNode }) {
-    return <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400 mb-1.5 block">{children}</label>;
+    return <label className="text-[11px] font-black uppercase tracking-[0.16em] text-foreground-tertiary mb-2 block">{children}</label>;
 }
 
 function SectionHeader({ icon: Icon, title }: { icon: any; title: string }) {
     return (
-        <div className="flex items-center gap-2 pb-3 mb-4 border-b border-black/[0.04] dark:border-white/[0.08]">
-            <Icon className="h-3.5 w-3.5 text-blue-500" />
-            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">{title}</span>
+        <div className="flex items-center gap-2 pb-4 mb-5 border-b border-black/[0.05] dark:border-white/[0.1]">
+            <Icon className="h-4 w-4 text-blue-500" />
+            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground-tertiary">{title}</span>
         </div>
     );
 }
 
 function Toggle({ value, onTrue, onFalse }: { value: boolean; onTrue: () => void; onFalse: () => void; }) {
     return (
-        <div className="flex bg-black/[0.02] border border-black/[0.04] p-0.5 rounded-lg w-fit mt-1.5">
+        <div className="flex bg-black/[0.04] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.1] p-1 rounded-xl w-fit mt-2">
             <button type="button" onClick={onTrue}
-                className={cn("px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all",
-                    value ? "bg-white dark:bg-white/15 text-blue-600 dark:text-blue-400 shadow-sm" : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-200")}>
+                className={cn("px-6 py-2 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all",
+                    value ? "bg-white dark:bg-white/12 text-blue-600 dark:text-white shadow-md" : "text-foreground-quaternary hover:text-foreground")}>
                 Sim
             </button>
             <button type="button" onClick={onFalse}
-                className={cn("px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all",
-                    !value ? "bg-white dark:bg-white/15 text-gray-700 dark:text-gray-200 shadow-sm" : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-200")}>
+                className={cn("px-6 py-2 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all",
+                    !value ? "bg-white dark:bg-white/12 text-foreground shadow-md" : "text-foreground-quaternary hover:text-foreground")}>
                 Não
             </button>
         </div>

@@ -17,7 +17,7 @@ export default function Sidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="fixed left-0 top-0 bottom-0 w-72 flex flex-col bg-white/80 dark:bg-black/80 backdrop-blur-2xl border-r border-black/5 dark:border-white/10 z-40 transition-all duration-300">
+        <aside className="fixed left-0 top-0 bottom-0 w-72 flex flex-col bg-background/80 backdrop-blur-2xl border-r border-black/5 dark:border-white/10 z-40 transition-all duration-300">
             {/* Logo area - More Apple-like */}
             <div className="h-24 flex items-center px-8">
                 <div className="flex items-center gap-3 group cursor-pointer">
@@ -25,15 +25,14 @@ export default function Sidebar() {
                         <Store className="text-white h-6 w-6" />
                     </div>
                     <div>
-                        <span className="text-lg font-bold tracking-tight block leading-none">Farmácia10x</span>
-
+                        <span className="text-xl font-black tracking-tight block leading-none text-foreground">Farmácia10x</span>
                     </div>
                 </div>
             </div>
 
             <nav className="flex-1 py-6 px-4 space-y-1">
-                <div className="px-4 mb-4">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/20">Menu Principal</span>
+                <div className="px-4 mb-5">
+                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground-tertiary">Menu Principal</span>
                 </div>
 
                 {links.map((link) => {
@@ -64,8 +63,8 @@ export default function Sidebar() {
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[11px] font-bold">V 1.2.0</span>
-                        <span className="text-[9px] font-medium text-foreground/40">Status: Estável</span>
+                        <span className="text-[11px] font-black tracking-widest text-foreground">V 1.2.0</span>
+                        <span className="text-[10px] font-bold text-foreground-secondary">Status: Estável</span>
                     </div>
                 </div>
             </div>

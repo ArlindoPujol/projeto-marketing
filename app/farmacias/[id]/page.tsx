@@ -3,7 +3,7 @@
 
 import { Farmacia, Tarefa, Reuniao } from '@/lib/db';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
     Edit, Trash2, MapPin, User, CheckSquare, Calendar, FileText,
     Plus, TrendingUp, Phone, Instagram, Globe, DollarSign, Store,
@@ -15,6 +15,7 @@ import { FormButton } from '@/components/ui/FormButton';
 import { PageLoader, LoadError } from '@/components/ui/PageLoader';
 import { useConfirm } from '@/contexts/ConfirmContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useFarmacia } from '@/contexts/FarmaciaContext';
 
 type Tab = 'dados' | 'tarefas' | 'diagnostico' | 'agenda';
 
@@ -99,42 +100,42 @@ function ReuniaoForm({
     const [resumo, setResumo] = useState(inicial?.resumo || '');
     const [proximosPassos, setProximosPassos] = useState(inicial?.proximosPassos || '');
 
-    const inputCls = "w-full bg-black/[0.02] dark:bg-white/[0.05] border border-black/[0.05] dark:border-white/[0.1] rounded-xl px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-200 placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-blue-400 transition-colors";
+    const inputCls = "w-full bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.1] rounded-xl px-4 py-3.5 text-base font-bold text-foreground placeholder:text-foreground-quaternary focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 transition-all";
 
     return (
-        <div className="glass-card rounded-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
-            <div className="px-6 py-3 border-b border-black/[0.04] flex items-center gap-2">
-                <Calendar className="h-3.5 w-3.5 text-blue-500" />
-                <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500">
+        <div className="glass-card rounded-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 border-dashed">
+            <div className="px-6 py-4 border-b border-black/[0.04] dark:border-white/[0.08] flex items-center gap-2 bg-black/[0.01] dark:bg-white/[0.01]">
+                <Calendar className="h-4 w-4 text-blue-500" />
+                <span className="text-[11px] font-black uppercase tracking-[0.18em] text-foreground-tertiary">
                     {inicial?.id ? 'Editar Reunião' : 'Nova Reunião'}
                 </span>
             </div>
             <form
-                className="p-6 space-y-4"
+                className="p-6 space-y-5"
                 onSubmit={async (e) => {
                     e.preventDefault();
                     await onSalvar({ data, pauta, resumo, proximosPassos });
                 }}
             >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                        <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400">Data da Reunião</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground-tertiary">Data da Reunião</label>
                         <input type="date" required value={data} onChange={e => setData(e.target.value)} className={inputCls} />
                     </div>
-                    <div className="space-y-1.5">
-                        <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400">Pauta</label>
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground-tertiary">Pauta</label>
                         <input type="text" required value={pauta} onChange={e => setPauta(e.target.value)} placeholder="Assunto principal..." className={inputCls} />
                     </div>
                 </div>
-                <div className="space-y-1.5">
-                    <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400">Resumo / O que foi discutido</label>
-                    <textarea rows={3} value={resumo} onChange={e => setResumo(e.target.value)} placeholder="Principais pontos abordados..." className={cn(inputCls, "resize-none")} />
+                <div className="space-y-2">
+                    <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground-tertiary">Resumo / O que foi discutido</label>
+                    <textarea rows={4} value={resumo} onChange={e => setResumo(e.target.value)} placeholder="Principais pontos abordados..." className={cn(inputCls, "resize-none")} />
                 </div>
-                <div className="space-y-1.5">
-                    <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400">Próximos Passos</label>
-                    <textarea rows={2} value={proximosPassos} onChange={e => setProximosPassos(e.target.value)} placeholder="Ações definidas para os próximos dias..." className={cn(inputCls, "resize-none")} />
+                <div className="space-y-2">
+                    <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground-tertiary">Próximos Passos</label>
+                    <textarea rows={3} value={proximosPassos} onChange={e => setProximosPassos(e.target.value)} placeholder="Ações definidas para os próximos dias..." className={cn(inputCls, "resize-none")} />
                 </div>
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-3 pt-2">
                     <FormButton
                         state={saving ? 'loading' : 'idle'}
                         idleLabel={inicial?.id ? 'Salvar Reunião' : 'Agendar Reunião'}
@@ -144,8 +145,8 @@ function ReuniaoForm({
                         fullWidth
                     />
                     <button type="button" onClick={onCancelar}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-black/[0.07] dark:border-white/[0.10] text-[#636366] dark:text-[#8E8E93] font-bold text-[10px] uppercase tracking-widest hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-all">
-                        <X className="h-3.5 w-3.5" />
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-xl border border-black/[0.08] dark:border-white/[0.12] text-foreground-secondary font-bold text-[11px] uppercase tracking-widest hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-all">
+                        <X className="h-4 w-4" />
                         Cancelar
                     </button>
                 </div>
@@ -157,6 +158,7 @@ function ReuniaoForm({
 // ══════════════════════════════════════════════════════════
 export default function FarmaciaDetailsPage() {
     const { id } = useParams() as { id: string };
+    const { selectedFarmaciaId, setSelectedFarmaciaId } = useFarmacia();
     const router = useRouter();
     const confirm = useConfirm();
     const { toast } = useToast();
@@ -203,31 +205,73 @@ export default function FarmaciaDetailsPage() {
         setSavingDiag(false);
     }
 
-    useEffect(() => {
-        if (!id) return;
-        async function fetchDetails() {
-            setLoading(true);
-            try {
-                const [fRes, tRes, rRes] = await Promise.all([
-                    fetch(`/api/farmacias/${id}`, { cache: 'no-store' }),
-                    fetch(`/api/tarefas?farmaciaId=${id}`, { cache: 'no-store' }),
-                    fetch(`/api/reunioes?farmaciaId=${id}`, { cache: 'no-store' })
-                ]);
-                if (fRes.ok) {
-                    const f: Farmacia = await fRes.json();
-                    setFarmacia(f);
-                    setDiagEntries(parseDiagEntries(f.notas || ''));
-                }
-                if (tRes.ok) setTarefas(await tRes.json());
-                if (rRes.ok) setReunioes(await rRes.json());
-            } catch (error) {
-                console.error('Falha ao carregar detalhes', error);
-            } finally {
-                setLoading(false);
+    // Funções auxiliares de limpeza
+    const getCleanId = useCallback(() => decodeURIComponent(String(id)).trim(), [id]);
+
+    const fetchTarefas = useCallback(async () => {
+        const cleanId = getCleanId();
+        if (!cleanId || cleanId === 'undefined') return [];
+
+        try {
+            console.log(`[DEBUG] Buscando tarefas para farmacia: "${cleanId}"`);
+
+            const res = await fetch(`/api/tarefas?farmaciaId=${cleanId}`, {
+                cache: 'no-store',
+                headers: { 'Pragma': 'no-cache' }
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                console.log(`[DEBUG] Servidor retornou ${data.length} tarefas.`, data);
+
+                // O servidor já filtra por farmacia_id.
+                setTarefas(data);
+                return data;
+            } else {
+                const err = await res.text();
+                console.error('[DEBUG] Erro na API ao buscar tarefas:', err);
             }
+        } catch (error) {
+            console.error('[DEBUG] Falha ao carregar tarefas', error);
         }
+        return [];
+    }, [getCleanId]);
+
+    const fetchDetails = useCallback(async () => {
+        const cleanId = getCleanId();
+        if (!cleanId || cleanId === 'undefined') return;
+
+        setLoading(true);
+        try {
+            const [fRes, rRes] = await Promise.all([
+                fetch(`/api/farmacias/${cleanId}`, { cache: 'no-store' }),
+                fetch(`/api/reunioes?farmaciaId=${cleanId}`, { cache: 'no-store' })
+            ]);
+            if (fRes.ok) {
+                const f: Farmacia = await fRes.json();
+                setFarmacia(f);
+                setDiagEntries(parseDiagEntries(f.notas || ''));
+            }
+            await fetchTarefas();
+            if (rRes.ok) setReunioes(await rRes.json());
+        } catch (error) {
+            console.error('Falha ao carregar detalhes', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [getCleanId, fetchTarefas]);
+
+    useEffect(() => {
+        const cleanId = getCleanId();
+        if (!cleanId || cleanId === 'undefined') return;
+
+        // Sincroniza a farmácia selecionada no contexto global
+        if (selectedFarmaciaId !== cleanId) {
+            setSelectedFarmaciaId(cleanId);
+        }
+
         fetchDetails();
-    }, [id]);
+    }, [getCleanId, setSelectedFarmaciaId, selectedFarmaciaId, fetchDetails]);
 
     if (loading) return <PageLoader label="Carregando dados da unidade…" />;
     if (!farmacia) return <LoadError message="Unidade não encontrada." onRetry={() => window.location.reload()} />;
@@ -269,6 +313,12 @@ export default function FarmaciaDetailsPage() {
 
     // ── Handlers de Reunião ────────────────────────────────
     async function handleSalvarReuniao(dados: Partial<Reuniao>) {
+        const cleanId = getCleanId();
+        if (!cleanId || cleanId === 'undefined') {
+            toast('Erro: ID da farmácia não identificado', 'error');
+            return;
+        }
+
         setSavingReuniao(true);
         try {
             if (reuniaoEditandoId) {
@@ -278,22 +328,31 @@ export default function FarmaciaDetailsPage() {
                     body: JSON.stringify(dados)
                 });
                 if (res.ok) {
-                    const rRes = await fetch(`/api/reunioes?farmaciaId=${id}`);
-                    if (rRes.ok) setReunioes(await rRes.json());
+                    toast('Reunião atualizada com sucesso!', 'success');
+                    await fetchDetails(); // Recarrega tudo para garantir sincronia
                     setReuniaoEditandoId(null);
+                } else {
+                    const errData = await res.json().catch(() => ({ error: 'Erro ao atualizar' }));
+                    toast(`Erro: ${errData.error}`, 'error');
                 }
             } else {
                 const res = await fetch('/api/reunioes', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ farmaciaId: id, ...dados })
+                    body: JSON.stringify({ farmaciaId: cleanId, ...dados })
                 });
                 if (res.ok) {
-                    const rRes = await fetch(`/api/reunioes?farmaciaId=${id}`);
-                    if (rRes.ok) setReunioes(await rRes.json());
+                    toast('Reunião agendada com sucesso!', 'success');
+                    await fetchDetails(); // Recarrega tudo
                     setAgendandoReuniao(false);
+                } else {
+                    const errData = await res.json().catch(() => ({ error: 'Erro ao agendar' }));
+                    toast(`Erro: ${errData.error}`, 'error');
                 }
             }
+        } catch (error) {
+            console.error('Falha ao salvar reunião', error);
+            toast('Erro de conexão ao salvar reunião', 'error');
         } finally {
             setSavingReuniao(false);
         }
@@ -364,16 +423,18 @@ export default function FarmaciaDetailsPage() {
             </div>
 
             {/* Abas */}
-            <div className="flex items-center gap-1 bg-black/[0.02] dark:bg-white/[0.03] p-1 rounded-2xl border border-black/[0.04] dark:border-white/[0.08] w-fit">
+            <div className="flex items-center gap-2 bg-black/[0.02] dark:bg-white/[0.03] p-1.5 rounded-2xl border border-black/[0.05] dark:border-white/[0.1] w-fit backdrop-blur-xl">
                 {(Object.keys(tabLabels) as Tab[]).map((tab) => {
                     const Icon = tabIcons[tab];
                     const isActive = activeTab === tab;
                     return (
                         <button key={tab} onClick={() => setActiveTab(tab)} className={cn(
-                            "flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-[0.08em] transition-all duration-300",
-                            isActive ? "bg-white dark:bg-white/10 text-blue-600 dark:text-white shadow-sm border border-black/[0.04] dark:border-white/10" : "text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                            "flex items-center gap-2 px-6 py-3 rounded-xl text-[12px] font-black uppercase tracking-wider transition-all duration-300",
+                            isActive
+                                ? "bg-white dark:bg-white/12 text-blue-600 dark:text-white shadow-md border border-black/[0.02] dark:border-white/10"
+                                : "text-foreground-tertiary hover:text-foreground dark:hover:text-white"
                         )}>
-                            <Icon className={cn("h-3 w-3", isActive ? "text-blue-500" : "opacity-40")} />
+                            <Icon className={cn("h-4 w-4 transition-transform duration-300", isActive ? "text-blue-500 scale-110" : "opacity-30")} />
                             {tabLabels[tab]}
                         </button>
                     );
@@ -603,38 +664,49 @@ export default function FarmaciaDetailsPage() {
                         </div>
 
                         {/* Form nova tarefa */}
-                        <div className="glass-card p-2 rounded-2xl">
+                        <div className="glass-card p-2 rounded-2xl border-dashed">
                             <form
                                 onSubmit={async (e) => {
                                     e.preventDefault();
                                     const form = e.target as HTMLFormElement;
                                     const formData = new FormData(form);
-                                    await fetch('/api/tarefas', {
-                                        method: 'POST',
-                                        body: JSON.stringify({
-                                            farmaciaId: id,
-                                            titulo: formData.get('titulo'),
-                                            vencimento: formData.get('vencimento'),
-                                            prioridade: 'medium',
-                                            status: 'todo',
-                                            descricao: ''
-                                        })
-                                    });
-                                    const tRes = await fetch(`/api/tarefas?farmaciaId=${id}`);
-                                    if (tRes.ok) setTarefas(await tRes.json());
-                                    form.reset();
+                                    try {
+                                        const cleanId = getCleanId();
+                                        const res = await fetch('/api/tarefas', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                                farmaciaId: cleanId,
+                                                titulo: formData.get('titulo'),
+                                                vencimento: formData.get('vencimento'),
+                                                prioridade: 'medium',
+                                                status: 'todo',
+                                                descricao: ''
+                                            })
+                                        });
+                                        if (res.ok) {
+                                            toast('Tarefa adicionada com sucesso!', 'success');
+                                            await fetchTarefas(); // Recarrega a lista do servidor para garantir sincronia
+                                            form.reset();
+                                        } else {
+                                            const errData = await res.json().catch(() => ({ error: 'Erro de resposta' }));
+                                            toast(`Erro ao salvar: ${errData.error || 'Verifique os dados'}`, 'error');
+                                        }
+                                    } catch (err) {
+                                        toast('Erro de conexão ao adicionar tarefa', 'error');
+                                    }
                                 }}
-                                className="flex flex-col lg:flex-row gap-2 p-2"
+                                className="flex flex-col lg:flex-row gap-3 p-2"
                             >
-                                <div className="flex-1 bg-black/[0.01] rounded-xl border border-black/[0.03] px-4 flex items-center">
-                                    <Plus className="h-3.5 w-3.5 text-gray-300 mr-3" />
-                                    <input name="titulo" required placeholder="Nova tarefa..."
-                                        className="w-full bg-transparent border-none py-3 text-sm font-medium focus:ring-0 text-gray-700 placeholder:text-gray-300" />
+                                <div className="flex-1 bg-black/[0.02] dark:bg-white/[0.03] rounded-xl border border-black/[0.05] dark:border-white/[0.1] px-4 flex items-center focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500/50 transition-all">
+                                    <Plus className="h-4 w-4 text-foreground-quaternary mr-3" />
+                                    <input name="titulo" required placeholder="O que precisa ser feito?"
+                                        className="w-full bg-transparent border-none py-3.5 text-base font-bold focus:ring-0 text-foreground placeholder:text-foreground-quaternary" />
                                 </div>
                                 <div className="flex gap-2">
                                     <input type="date" name="vencimento" required
-                                        className="bg-black/[0.01] rounded-xl border border-black/[0.03] px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-gray-600" />
-                                    <button type="submit" className="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-700 transition-all">
+                                        className="bg-black/[0.02] dark:bg-white/[0.03] rounded-xl border border-black/[0.05] dark:border-white/[0.1] px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-foreground-secondary focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all outline-none" />
+                                    <button type="submit" className="bg-blue-600 text-white px-8 py-2.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-blue-700 shadow-lg shadow-blue-500/20 active:scale-95 transition-all">
                                         Adicionar
                                     </button>
                                 </div>
@@ -649,17 +721,19 @@ export default function FarmaciaDetailsPage() {
                                 </div>
                             )}
                             {tarefas.map((tarefa) => {
-                                const isDone = tarefa.status === 'done';
+                                const isDone = tarefa.status === 'done' || tarefa.status === 'concluido';
                                 const today = new Date(); today.setHours(0, 0, 0, 0);
-                                const isLate = !isDone && tarefa.vencimento && new Date(tarefa.vencimento) < today;
+                                // Normaliza a data para evitar problemas de fuso horário
+                                const dataVenc = tarefa.vencimento ? new Date(tarefa.vencimento.split('T')[0] + 'T23:59:59') : null;
+                                const isLate = !isDone && dataVenc && dataVenc < today;
                                 return (
                                     <div key={tarefa.id} className={cn(
-                                        "group flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300",
+                                        "group flex items-center gap-4 p-5 rounded-2xl border transition-all duration-300",
                                         isDone
-                                            ? "bg-green-500/[0.03] border-green-500/10"
+                                            ? "bg-green-500/[0.04] border-green-500/20"
                                             : isLate
-                                                ? "glass-card border-red-500/10 shadow-sm"
-                                                : "glass-card shadow-sm hover:-translate-y-px"
+                                                ? "bg-red-500/[0.04] border-red-500/20 shadow-sm"
+                                                : "bg-[#FDFDFD] dark:bg-white/[0.03] border-black/[0.05] dark:border-white/[0.08] shadow-sm hover:border-blue-500/30"
                                     )}>
                                         {/* Checkbox */}
                                         <button
@@ -668,6 +742,7 @@ export default function FarmaciaDetailsPage() {
                                                 setTarefas(prev => prev.map(t => t.id === tarefa.id ? { ...t, status: newStatus } : t));
                                                 await fetch(`/api/tarefas/${tarefa.id}`, {
                                                     method: 'PUT',
+                                                    headers: { 'Content-Type': 'application/json' },
                                                     body: JSON.stringify({ status: newStatus })
                                                 });
                                             }}
@@ -682,26 +757,14 @@ export default function FarmaciaDetailsPage() {
                                         {/* Título + meta */}
                                         <div className="flex-1 min-w-0">
                                             <h4 className={cn(
-                                                "text-sm font-semibold tracking-tight truncate",
-                                                isDone ? "line-through text-green-600/60" : "text-gray-800"
+                                                "text-[15px] font-bold tracking-tight truncate",
+                                                isDone ? "line-through text-foreground-quaternary" : "text-foreground"
                                             )}>{tarefa.titulo}</h4>
-                                            <div className="flex items-center gap-3 mt-0.5">
-                                                <span className={cn("text-[9px] font-bold uppercase tracking-widest",
-                                                    isDone ? "text-green-500/60" : isLate ? "text-red-400" : "text-gray-400")}>
-                                                    {tarefa.vencimento ? new Date(tarefa.vencimento + 'T12:00:00').toLocaleDateString('pt-BR') : 'Sem data'}
+                                            <div className="flex items-center gap-3 mt-1">
+                                                <span className={cn("text-[11px] font-black uppercase tracking-widest",
+                                                    isDone ? "text-green-500/60" : isLate ? "text-red-500" : "text-foreground-tertiary")}>
+                                                    {tarefa.vencimento ? new Date(tarefa.vencimento.split('T')[0] + 'T12:00:00').toLocaleDateString('pt-BR') : 'Sem data'}
                                                 </span>
-                                                {isDone ? (
-                                                    <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded border bg-green-500/5 text-green-600 border-green-500/10">
-                                                        Concluída
-                                                    </span>
-                                                ) : (
-                                                    <span className={cn(
-                                                        "text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded border",
-                                                        (tarefa.prioridade === 'high' || tarefa.prioridade === 'Alta') ? "text-red-500 bg-red-500/5 border-red-500/10" :
-                                                            (tarefa.prioridade === 'medium' || tarefa.prioridade === 'Média') ? "text-amber-500 bg-amber-500/5 border-amber-500/10" :
-                                                                "text-gray-400 bg-gray-100 border-gray-200"
-                                                    )}>{tarefa.prioridade || 'Média'}</span>
-                                                )}
                                             </div>
                                         </div>
 
@@ -723,8 +786,8 @@ export default function FarmaciaDetailsPage() {
                     <div className="max-w-3xl space-y-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h3 className="text-lg font-bold text-gray-900 tracking-tight">Diagnóstico</h3>
-                                <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest mt-0.5">
+                                <h3 className="text-xl font-bold text-foreground tracking-tight">Diagnóstico</h3>
+                                <p className="text-[11px] text-foreground-tertiary font-bold uppercase tracking-widest mt-1">
                                     {diagEntries.length} {diagEntries.length === 1 ? 'registro' : 'registros'}
                                 </p>
                             </div>
@@ -732,9 +795,9 @@ export default function FarmaciaDetailsPage() {
 
                         {/* Nova entrada */}
                         <div className="glass-card rounded-2xl overflow-hidden">
-                            <div className="px-5 py-3 border-b border-black/[0.04] flex items-center gap-2">
+                            <div className="px-5 py-3 border-b border-black/[0.04] dark:border-white/[0.08] flex items-center gap-2">
                                 <StickyNote className="h-3.5 w-3.5 text-blue-500" />
-                                <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500">
+                                <span className="text-[11px] font-black uppercase tracking-[0.18em] text-foreground-tertiary">
                                     Nova Observação — {new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
                                 </span>
                             </div>
@@ -744,14 +807,14 @@ export default function FarmaciaDetailsPage() {
                                     onChange={e => setNovaEntradaTexto(e.target.value)}
                                     rows={4}
                                     placeholder="Registre aqui diagnósticos, pontos de atenção, oportunidades identificadas..."
-                                    className="w-full bg-black/[0.01] border border-black/[0.04] rounded-xl px-4 py-3 text-sm text-gray-700 placeholder:text-gray-300 font-medium focus:outline-none focus:border-blue-400 transition-colors resize-none"
+                                    className="w-full bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.1] rounded-xl px-4 py-3 text-base text-foreground placeholder:text-foreground-quaternary font-bold focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 transition-all resize-none"
                                 />
                                 <button
                                     onClick={handleAddDiag}
                                     disabled={savingDiag || !novaEntradaTexto.trim()}
-                                    className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-700 transition-all disabled:opacity-40"
+                                    className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-blue-700 shadow-lg shadow-blue-500/20 active:scale-95 transition-all disabled:opacity-40"
                                 >
-                                    <Plus className="h-3.5 w-3.5" />
+                                    <Plus className="h-4 w-4" />
                                     {savingDiag ? 'Salvando...' : 'Adicionar Registro'}
                                 </button>
                             </div>
@@ -772,20 +835,20 @@ export default function FarmaciaDetailsPage() {
                                 {diagEntries.map((entry) => (
                                     <div key={entry.id} className="glass-card rounded-2xl overflow-hidden group">
                                         {/* Header do card */}
-                                        <div className="px-5 py-3 border-b border-black/[0.04] flex items-center justify-between bg-black/[0.01]">
+                                        <div className="px-5 py-3 border-b border-black/[0.04] dark:border-white/[0.08] flex items-center justify-between bg-black/[0.01] dark:bg-white/[0.02]">
                                             <div className="flex items-center gap-2">
-                                                <Clock className="h-3 w-3 text-blue-400" />
-                                                <span className="text-[9px] font-black text-blue-500 uppercase tracking-[0.15em]">
+                                                <Clock className="h-3.5 w-3.5 text-blue-500" />
+                                                <span className="text-[11px] font-black text-blue-500 uppercase tracking-[0.15em]">
                                                     {new Date(entry.data + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => { setEditandoDiagId(entry.id); setEditandoDiagTexto(entry.texto); }}
-                                                    className="p-1.5 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-500/5 transition-all"
+                                                    className="p-1.5 rounded-lg text-foreground-tertiary hover:text-blue-500 hover:bg-blue-500/10 transition-all"
                                                     title="Editar"
                                                 >
-                                                    <Edit className="h-3.5 w-3.5" />
+                                                    <Edit className="h-4 w-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteDiag(entry.id)}
@@ -885,46 +948,46 @@ export default function FarmaciaDetailsPage() {
                                             />
                                         ) : (
                                             /* Modo visualização */
-                                            <div className="glass-card rounded-2xl overflow-hidden group">
-                                                <div className="px-5 py-3 bg-black/[0.01] border-b border-black/[0.04] flex items-center justify-between">
+                                            <div className="glass-card rounded-2xl overflow-hidden group border-black/[0.05] dark:border-white/[0.1]">
+                                                <div className="px-5 py-4 bg-black/[0.01] dark:bg-white/[0.02] border-b border-black/[0.05] dark:border-white/[0.1] flex items-center justify-between transition-colors group-hover:bg-black/[0.02] dark:group-hover:bg-white/[0.04]">
                                                     <div className="flex items-center gap-2">
-                                                        <Clock className="h-3 w-3 text-blue-400" />
-                                                        <span className="text-[9px] font-black text-blue-500 uppercase tracking-[0.15em]">
+                                                        <Clock className="h-4 w-4 text-blue-500" />
+                                                        <span className="text-[12px] font-black text-blue-500 uppercase tracking-widest">
                                                             {new Date(meet.data + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
                                                         </span>
                                                     </div>
-                                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-1 group-hover:translate-x-0">
                                                         <button
                                                             onClick={() => setReuniaoEditandoId(meet.id)}
-                                                            className="p-1.5 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-500/5 transition-all"
+                                                            className="p-2 rounded-xl text-foreground-tertiary hover:text-blue-500 hover:bg-blue-500/10 transition-all"
                                                             title="Editar reunião"
                                                         >
-                                                            <Edit className="h-3.5 w-3.5" />
+                                                            <Edit className="h-4 w-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => handleDeleteReuniao(meet.id)}
-                                                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-500/5 transition-all"
+                                                            className="p-2 rounded-xl text-foreground-tertiary hover:text-red-500 hover:bg-red-500/10 transition-all"
                                                             title="Remover reunião"
                                                         >
-                                                            <Trash2 className="h-3.5 w-3.5" />
+                                                            <Trash2 className="h-4 w-4" />
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <div className="p-5 space-y-3">
+                                                <div className="p-6 space-y-5">
                                                     <div>
-                                                        <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-gray-400 mb-1">Pauta</p>
-                                                        <p className="text-sm font-semibold text-gray-800">{meet.pauta}</p>
+                                                        <p className="text-[11px] font-black uppercase tracking-widest text-foreground-tertiary mb-1.5">Pauta</p>
+                                                        <p className="text-base font-bold text-foreground leading-snug">{meet.pauta}</p>
                                                     </div>
                                                     {meet.resumo && (
-                                                        <div>
-                                                            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-gray-400 mb-1">Resumo</p>
-                                                            <p className="text-sm text-gray-600 leading-relaxed">{meet.resumo}</p>
+                                                        <div className="space-y-1.5">
+                                                            <p className="text-[11px] font-black uppercase tracking-widest text-foreground-tertiary">Resumo</p>
+                                                            <p className="text-[15px] font-medium text-foreground-secondary leading-relaxed">{meet.resumo}</p>
                                                         </div>
                                                     )}
                                                     {meet.proximosPassos && (
-                                                        <div className="bg-blue-500/[0.03] border border-blue-500/10 rounded-xl p-3">
-                                                            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-blue-500 mb-1">Próximos Passos</p>
-                                                            <p className="text-xs text-gray-600 leading-relaxed">{meet.proximosPassos}</p>
+                                                        <div className="bg-blue-500/[0.04] dark:bg-blue-500/[0.08] border border-blue-500/20 rounded-2xl p-4 shadow-sm">
+                                                            <p className="text-[11px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-1.5">Próximos Passos</p>
+                                                            <p className="text-[15px] font-bold text-foreground-secondary leading-relaxed">{meet.proximosPassos}</p>
                                                         </div>
                                                     )}
                                                 </div>

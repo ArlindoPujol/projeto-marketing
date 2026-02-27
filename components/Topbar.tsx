@@ -38,15 +38,15 @@ export default function Topbar() {
         <>
             <header className={cn(
                 'fixed top-0 left-72 right-0 z-30 transition-all duration-300 py-6 px-10',
-                scrolled && 'bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-black/5 dark:border-white/5 py-4'
+                scrolled && 'bg-background/80 backdrop-blur-xl border-b border-black/5 dark:border-white/5 py-4'
             )}>
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
 
                     {/* Breadcrumbs - Extremely clean */}
-                    <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-foreground/30">
-                        <Home className="h-3.5 w-3.5 opacity-50" />
+                    <div className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-foreground-tertiary">
+                        <Home className="h-4 w-4 opacity-50" />
                         <span>/</span>
-                        <span className="text-foreground/80">{currentLink?.label || 'Início'}</span>
+                        <span className="text-foreground">{currentLink?.label || 'Início'}</span>
                     </div>
 
                     <div className="flex items-center gap-6">
@@ -57,7 +57,7 @@ export default function Topbar() {
                             <select
                                 value={selectedFarmaciaId}
                                 onChange={e => setSelectedFarmaciaId(e.target.value)}
-                                className="appearance-none bg-transparent border-none outline-none text-[12px] font-bold uppercase tracking-widest cursor-pointer focus:ring-0 py-1"
+                                className="appearance-none bg-transparent border-none outline-none text-[13px] font-black uppercase tracking-widest cursor-pointer focus:ring-0 py-1 text-foreground"
                             >
                                 <option value="global" className="bg-white dark:bg-black">Rede Global</option>
                                 {farmacias.map(f => (

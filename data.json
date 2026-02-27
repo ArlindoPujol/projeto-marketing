@@ -1,0 +1,79 @@
+{
+  "farmacias": [
+    {
+      "id": "qsukr6z9zmm3ojvrq",
+      "nomeFarmacia": "Arlindo",
+      "responsavelNome": "Arlindo",
+      "whatsapp": "66999368242",
+      "cidade": "São Paulo",
+      "uf": "SP",
+      "endereco": "",
+      "instagram": "",
+      "facebook": "",
+      "googleMyBusiness": null,
+      "linkedin": null,
+      "youtube": null,
+      "website": null,
+      "faturamentoDeliveryMensal": null,
+      "numeroPedidos": null,
+      "jaInvestiuTrafego": false,
+      "ondeInvestia": null,
+      "siteUrl": null,
+      "ecommerceDescricao": null,
+      "statusMarketing": "waiting_access",
+      "prioridade": "medium",
+      "notas": "[{\"id\":\"1772123544421\",\"data\":\"2026-02-26\",\"texto\":\"ok\"}]",
+      "criadoEm": "2026-02-26T16:30:58.454Z",
+      "atualizadoEm": "2026-02-26T16:32:24.493Z",
+      "acessosEnviadosWhatsapp": true,
+      "temDelivery": false,
+      "quemFaziaTrafego": null,
+      "quantoInvestia": null,
+      "temSite": false,
+      "temEcommerce": false
+    }
+  ],
+  "playbookTemplates": [],
+  "playbookRuns": [],
+  "playbookRunItens": [],
+  "tarefas": [
+    {
+      "id": "pmheslmslmm3oknkz",
+      "farmaciaId": "qsukr6z9zmm3ojvrq",
+      "titulo": "Teste",
+      "descricao": "",
+      "status": "todo",
+      "vencimento": "2026-02-27",
+      "prioridade": "medium",
+      "notas": ""
+    },
+    {
+      "id": "aqwsuyq4imm3q3idk",
+      "farmaciaId": "qsukr6z9zmm3ojvrq",
+      "titulo": "kjjkk",
+      "descricao": "",
+      "status": "todo",
+      "vencimento": "2026-04-22",
+      "prioridade": "medium",
+      "notas": ""
+    }
+  ],
+  "reunioes": [
+    {
+      "id": "dxw861xclmm3ol1fe",
+      "farmaciaId": "qsukr6z9zmm3ojvrq",
+      "data": "2026-02-28",
+      "pauta": "teste",
+      "resumo": "teste",
+      "proximosPassos": "teste"
+    },
+    {
+      "id": "7xnnlgr5pmm3qae9x",
+      "farmaciaId": "qsukr6z9zmm3ojvrq",
+      "data": "2026-03-13",
+      "pauta": "testetrgs",
+      "resumo": "gdf",
+      "proximosPassos": "dgdf"
+    }
+  ]
+}

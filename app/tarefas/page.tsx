@@ -17,13 +17,7 @@ function todayMidnight() {
     const d = new Date(); d.setHours(0, 0, 0, 0); return d;
 }
 
-const prioConfig = {
-    high: { label: 'Alta', cls: 'bg-red-500/10    text-red-500    border-red-500/20' },
-    medium: { label: 'Média', cls: 'bg-amber-500/10  text-amber-500  border-amber-500/20' },
-    low: { label: 'Baixa', cls: 'bg-gray-400/10   text-gray-500   border-gray-300/40' },
-};
 
-type PrioFilter = 'all' | 'high' | 'medium' | 'low';
 type TarefaEnriquecida = Tarefa & { farmaciaNome: string };
 
 /* ── skeleton ───────────────────────────────────────── */
@@ -64,12 +58,12 @@ function Column({ title, icon: Icon, iconColor, count, empty, emptyHint, childre
 }) {
     return (
         <div className={cn('flex flex-col glass-card rounded-2xl overflow-hidden', 'dark:border dark:border-white/[0.09]')}>
-            <div className={cn('px-5 py-4 flex items-center justify-between border-b', 'border-black/[0.04] dark:border-white/[0.06]', headerCls)}>
+            <div className={cn('px-5 py-5 flex items-center justify-between border-b', 'border-black/[0.04] dark:border-white/[0.06]', headerCls)}>
                 <div className="flex items-center gap-2">
-                    <Icon className={cn('h-3.5 w-3.5', iconColor)} />
-                    <span className="text-[11px] font-black uppercase tracking-[0.08em] text-gray-900 dark:text-white">{title}</span>
+                    <Icon className={cn('h-4 w-4', iconColor)} />
+                    <span className="text-[12px] font-black uppercase tracking-[0.1em] text-foreground">{title}</span>
                 </div>
-                <span className="text-[10px] font-black tabular-nums px-2 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.08] text-gray-500 dark:text-gray-400">{count}</span>
+                <span className="text-[11px] font-black tabular-nums px-2.5 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.1] text-foreground-tertiary">{count}</span>
             </div>
             <div className="flex-1 overflow-y-auto p-3 space-y-2.5 max-h-[calc(100vh-300px)]">
                 {count === 0 ? (
@@ -88,11 +82,8 @@ function Column({ title, icon: Icon, iconColor, count, empty, emptyHint, childre
 function TaskCard({ t, onToggle }: { t: TarefaEnriquecida; onToggle: (id: string, newStatus: 'todo' | 'done') => void }) {
     const { toast } = useToast();
     const [toggling, setToggling] = useState(false);
-    const isOverdue = t.status !== 'done' && t.vencimento && new Date(t.vencimento) < todayMidnight();
+    const isOverdue = t.status !== 'done' && t.vencimento && new Date(t.vencimento.split('T')[0] + 'T23:59:59') < todayMidnight();
     const isDone = t.status === 'done';
-    const normalizedPrio = (t.prioridade === 'Alta' || t.prioridade === 'high') ? 'high' :
-        (t.prioridade === 'Baixa' || t.prioridade === 'low') ? 'low' : 'medium';
-    const prio = prioConfig[normalizedPrio];
 
     async function handleToggle(e: React.MouseEvent) {
         e.preventDefault();
@@ -149,8 +140,8 @@ function TaskCard({ t, onToggle }: { t: TarefaEnriquecida; onToggle: (id: string
                 </button>
 
                 <p className={cn(
-                    'flex-1 text-[12px] font-semibold text-gray-900 dark:text-white leading-snug',
-                    isDone && 'line-through text-gray-400 dark:text-gray-500',
+                    'flex-1 text-[14px] font-bold tracking-tight text-foreground leading-snug',
+                    isDone && 'line-through text-foreground-quaternary',
                 )}>
                     {t.titulo}
                 </p>
@@ -165,18 +156,14 @@ function TaskCard({ t, onToggle }: { t: TarefaEnriquecida; onToggle: (id: string
             </div>
 
             {/* Farmácia */}
-            <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-2.5 truncate pl-[26px]">{t.farmaciaNome}</p>
+            <p className="text-[11px] font-black uppercase tracking-widest text-foreground-tertiary mb-3 pl-[28px] truncate">{t.farmaciaNome}</p>
 
-            {/* Prioridade + data */}
-            <div className="flex items-center justify-between gap-2">
-                <span className={cn('text-[9px] font-bold uppercase tracking-wide px-1.5 py-[2px] rounded-full border', prio.cls)}>
-                    {prio.label}
-                </span>
+            <div className="flex items-center justify-end gap-2">
                 {t.vencimento && (
-                    <span className={cn('text-[10px] font-medium tabular-nums flex items-center gap-1', isOverdue ? 'text-red-500' : 'text-gray-400 dark:text-gray-500')}>
-                        <Clock className="h-2.5 w-2.5" />
+                    <span className={cn('text-[11px] font-black tabular-nums flex items-center gap-1.5 uppercase tracking-widest', isOverdue ? 'text-red-500' : 'text-foreground-quaternary')}>
+                        <Clock className="h-3.5 w-3.5" />
                         {isOverdue ? 'Atrasada · ' : ''}
-                        {new Date(t.vencimento).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                        {new Date(t.vencimento.split('T')[0] + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
                     </span>
                 )}
             </div>
@@ -193,14 +180,19 @@ export default function TarefasPage() {
     const { selectedFarmaciaId, farmacias } = useFarmacia();
     const [tarefas, setTarefas] = useState<TarefaEnriquecida[]>([]);
     const [loading, setLoading] = useState(true);
-    const [prioFilt, setPrioFilt] = useState<PrioFilter>('all');
+    // const [prioFilt, setPrioFilt] = useState<PrioFilter>('all');
     const [search, setSearch] = useState('');
 
     const load = useCallback(async () => {
         setLoading(true);
         try {
             const tRes = await fetch('/api/tarefas', { cache: 'no-store' });
-            const allTarefas: Tarefa[] = await tRes.json();
+            if (!tRes.ok) {
+                console.error('Falha ao buscar tarefas:', tRes.statusText);
+                return;
+            }
+            const data = await tRes.json();
+            const allTarefas: Tarefa[] = Array.isArray(data) ? data : [];
 
             const map = Object.fromEntries(farmacias.map(f => [f.id, f.nomeFarmacia]));
             const filtered = selectedFarmaciaId === 'global'
@@ -223,7 +215,7 @@ export default function TarefasPage() {
     /* Filtros combinados: prioridade + busca */
     const applyFilters = (arr: TarefaEnriquecida[]) => {
         let out = arr;
-        if (prioFilt !== 'all') out = out.filter(t => t.prioridade === prioFilt);
+        // if (prioFilt !== 'all') out = out.filter(t => t.prioridade === prioFilt);
         if (search.trim()) {
             const q = search.trim().toLowerCase();
             out = out.filter(t =>
@@ -242,16 +234,16 @@ export default function TarefasPage() {
         return new Date(a.vencimento!).getTime() - new Date(b.vencimento!).getTime();
     };
 
-    const atrasadas = applyFilters(tarefas.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento) < today)).sort(sortByVenc);
-    const pendentes = applyFilters(tarefas.filter(t => t.status !== 'done' && !(t.vencimento && new Date(t.vencimento) < today))).sort(sortByVenc);
+    const atrasadas = applyFilters(tarefas.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento.split('T')[0] + 'T23:59:59') < today)).sort(sortByVenc);
+    const pendentes = applyFilters(tarefas.filter(t => t.status !== 'done' && !(t.vencimento && new Date(t.vencimento.split('T')[0] + 'T23:59:59') < today))).sort(sortByVenc);
     const concluidas = applyFilters(tarefas.filter(t => t.status === 'done'));
 
     /* Contagens brutas para badges do header */
-    const atrasadasTotal = tarefas.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento) < today).length;
-    const pendentesTotal = tarefas.filter(t => t.status !== 'done' && !(t.vencimento && new Date(t.vencimento) < today)).length;
+    const atrasadasTotal = tarefas.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento.split('T')[0] + 'T23:59:59') < today).length;
+    const pendentesTotal = tarefas.filter(t => t.status !== 'done' && !(t.vencimento && new Date(t.vencimento.split('T')[0] + 'T23:59:59') < today)).length;
     const concluidasTotal = tarefas.filter(t => t.status === 'done').length;
 
-    const hasActiveFilter = prioFilt !== 'all' || search.trim().length > 0;
+    const hasActiveFilter = search.trim().length > 0;
 
     return (
         <div className="space-y-6 animate-in fade-in duration-700">
@@ -291,23 +283,6 @@ export default function TarefasPage() {
                         )}
                     </div>
 
-                    {/* Filtro de prioridade */}
-                    <div className="flex items-center gap-1 p-1 rounded-xl bg-black/[0.03] dark:bg-white/[0.05] border border-black/[0.05] dark:border-white/[0.08]">
-                        {(['all', 'high', 'medium', 'low'] as PrioFilter[]).map(f => (
-                            <button
-                                key={f}
-                                onClick={() => setPrioFilt(f)}
-                                className={cn(
-                                    'px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all',
-                                    prioFilt === f
-                                        ? 'bg-white dark:bg-white/[0.12] text-gray-900 dark:text-white shadow-sm'
-                                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200',
-                                )}
-                            >
-                                {f === 'all' ? 'Todas' : f === 'high' ? 'Alta' : f === 'medium' ? 'Média' : 'Baixa'}
-                            </button>
-                        ))}
-                    </div>
 
                     {/* Resumo */}
                     {atrasadasTotal > 0 && (
@@ -333,8 +308,7 @@ export default function TarefasPage() {
                     <span className="h-1 w-1 rounded-full bg-blue-500 inline-block" />
                     Filtrando resultados
                     {search && <span className="text-gray-500">· busca: <strong className="text-gray-700 dark:text-gray-300">"{search}"</strong></span>}
-                    {prioFilt !== 'all' && <span className="text-gray-500">· prioridade: <strong className="text-gray-700 dark:text-gray-300">{prioFilt === 'high' ? 'Alta' : prioFilt === 'medium' ? 'Média' : 'Baixa'}</strong></span>}
-                    <button onClick={() => { setSearch(''); setPrioFilt('all'); }} className="ml-1 text-blue-500 hover:opacity-70 transition-opacity">
+                    <button onClick={() => { setSearch(''); }} className="ml-1 text-blue-500 hover:opacity-70 transition-opacity">
                         Limpar ×
                     </button>
                 </div>
@@ -348,7 +322,7 @@ export default function TarefasPage() {
                             <ListTodo className="h-10 w-10 text-gray-200 dark:text-gray-700 mx-auto mb-4" />
                             <p className="text-[13px] font-bold text-gray-400">Nenhuma tarefa cadastrada</p>
                             <p className="text-[10px] text-gray-400/60 mt-2">
-                                Acesse o perfil de uma farmácia e adicione tarefas na aba <strong>Acompanhamento</strong>
+                                Acesse o perfil de uma farmácia e adicione tarefas na aba <strong>Tarefas</strong>
                             </p>
                             <Link href="/farmacias" className="mt-5 inline-block text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:opacity-70 transition-opacity">
                                 Ver Farmácias →

@@ -49,10 +49,13 @@ interface DashData {
   doneTotal: number;
   reuniaoHoje: number;
   farmaciasRows: FarmaciaRow[];
-  urgentTasks: (Tarefa & { farmaciaNome: string })[];
+  timelineTasks: {
+    overdue: (Tarefa & { farmaciaNome: string })[];
+    today: (Tarefa & { farmaciaNome: string })[];
+    tomorrow: (Tarefa & { farmaciaNome: string })[];
+    upcoming: (Tarefa & { farmaciaNome: string })[];
+  };
   nextMeetings: (Reuniao & { farmaciaNome: string })[];
-  semAtencao: string[];   /* farmácias sem nenhuma tarefa */
-  semReuniao30d: string[];   /* farmácias sem reunião nos últimos 30 dias */
 }
 
 /* ── componentes auxiliares ──────────────────────────── */
@@ -73,10 +76,10 @@ function StatCard({ label, value, sub, icon: Icon, color, href }: {
         {href && <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all text-primary translate-x-[-4px] group-hover:translate-x-0" />}
       </div>
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-foreground/30 mb-1">{label}</p>
+        <p className="text-[11px] font-black uppercase tracking-[0.16em] text-foreground-tertiary mb-2">{label}</p>
         <div className="flex items-baseline gap-2">
-          <h4 className="text-2xl font-bold tracking-tight tabular-nums">{value}</h4>
-          {sub && <span className="text-[10px] font-bold text-foreground/20">{sub}</span>}
+          <h4 className="text-3xl font-bold tracking-tight tabular-nums text-foreground">{value}</h4>
+          {sub && <span className="text-[11px] font-bold text-foreground-quaternary">{sub}</span>}
         </div>
       </div>
     </div>
@@ -92,8 +95,8 @@ function SectionHeader({ icon: Icon, color, title, sub, action, actionHref }: {
       <div className="flex items-center gap-3">
         <Icon className={cn('h-5 w-5 opacity-40', color)} />
         <div>
-          <h3 className="text-xs font-bold uppercase tracking-widest">{title}</h3>
-          {sub && <p className="text-[10px] font-medium text-foreground/30 mt-0.5">{sub}</p>}
+          <h3 className="text-[13px] font-black uppercase tracking-[0.18em] text-foreground">{title}</h3>
+          {sub && <p className="text-[11px] font-bold text-foreground-tertiary mt-1">{sub}</p>}
         </div>
       </div>
       {action && actionHref && (
@@ -132,21 +135,30 @@ export default function Dashboard() {
         const fMap = Object.fromEntries(allF.map(f => [f.id, f.nomeFarmacia]));
         const in3 = new Date(today); in3.setDate(in3.getDate() + 3);
 
-        const overdueTotal = tasks.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento) < today).length;
+        // Função auxiliar para comparar datas ignorando horas e fuso horário
+        const isOverdue = (venc: string | null) => {
+          if (!venc) return false;
+          // Garante que comparamos apenas a parte da data YYYY-MM-DD
+          const dv = new Date(venc.split('T')[0] + 'T23:59:59');
+          return dv < today;
+        };
+
+        const overdueTotal = tasks.filter(t => t.status !== 'done' && isOverdue(t.vencimento)).length;
         const pendingTotal = tasks.filter(t => t.status !== 'done').length;
         const doneTotal = tasks.filter(t => t.status === 'done').length;
+
         const reuniaoHoje = reunioes.filter(r => {
-          const d = new Date(r.data + 'T12:00:00');
+          const d = new Date(r.data.split('T')[0] + 'T12:00:00');
           return d >= today && d < tomorrow;
         }).length;
 
         const farmaciasRows: FarmaciaRow[] = farmacias.map(f => {
           const ft = tasks.filter(t => t.farmaciaId === f.id);
           const done = ft.filter(t => t.status === 'done').length;
-          const overdue = ft.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento) < today).length;
+          const overdue = ft.filter(t => t.status !== 'done' && isOverdue(t.vencimento)).length;
           const next = ft
-            .filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento) >= today)
-            .sort((a, b) => new Date(a.vencimento!).getTime() - new Date(b.vencimento!).getTime())[0];
+            .filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento.split('T')[0] + 'T23:59:59') >= today)
+            .sort((a, b) => new Date(a.vencimento!.split('T')[0]).getTime() - new Date(b.vencimento!.split('T')[0]).getTime())[0];
           return {
             id: f.id, nomeFarmacia: f.nomeFarmacia, statusMarketing: f.statusMarketing,
             totalTasks: ft.length, doneTasks: done, overdueTasks: overdue,
@@ -156,13 +168,30 @@ export default function Dashboard() {
           };
         }).sort((a, b) => b.overdueTasks - a.overdueTasks || a.nomeFarmacia.localeCompare(b.nomeFarmacia));
 
-        const urgentTasks = [
-          ...tasks.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento) < today),
-          ...tasks.filter(t => t.status !== 'done' && t.vencimento && new Date(t.vencimento) >= today && new Date(t.vencimento) < in3),
-        ]
-          .sort((a, b) => new Date(a.vencimento!).getTime() - new Date(b.vencimento!).getTime())
-          .slice(0, 6)
-          .map(t => ({ ...t, farmaciaNome: fMap[t.farmaciaId] ?? '—' }));
+        const timelineTasks = {
+          overdue: tasks.filter(t => t.status !== 'done' && isOverdue(t.vencimento))
+            .sort((a, b) => new Date(a.vencimento!).getTime() - new Date(b.vencimento!).getTime())
+            .map(t => ({ ...t, farmaciaNome: fMap[t.farmaciaId] ?? '—' })),
+          today: tasks.filter(t => {
+            if (t.status === 'done' || !t.vencimento) return false;
+            const d = new Date(t.vencimento.split('T')[0] + 'T12:00:00');
+            return d >= today && d < tomorrow;
+          }).map(t => ({ ...t, farmaciaNome: fMap[t.farmaciaId] ?? '—' })),
+          tomorrow: tasks.filter(t => {
+            if (t.status === 'done' || !t.vencimento) return false;
+            const d = new Date(t.vencimento.split('T')[0] + 'T12:00:00');
+            const nextDay = new Date(tomorrow); nextDay.setDate(nextDay.getDate() + 1);
+            return d >= tomorrow && d < nextDay;
+          }).map(t => ({ ...t, farmaciaNome: fMap[t.farmaciaId] ?? '—' })),
+          upcoming: tasks.filter(t => {
+            if (t.status === 'done' || !t.vencimento) return false;
+            const d = new Date(t.vencimento.split('T')[0] + 'T12:00:00');
+            const dayAfterTom = new Date(tomorrow); dayAfterTom.setDate(dayAfterTom.getDate() + 1);
+            return d >= dayAfterTom;
+          }).sort((a, b) => new Date(a.vencimento!).getTime() - new Date(b.vencimento!).getTime())
+            .slice(0, 10)
+            .map(t => ({ ...t, farmaciaNome: fMap[t.farmaciaId] ?? '—' })),
+        };
 
         const nextMeetings = reunioes
           .filter(r => new Date(r.data + 'T12:00:00') >= today)
@@ -170,24 +199,16 @@ export default function Dashboard() {
           .slice(0, 5)
           .map(m => ({ ...m, farmaciaNome: fMap[m.farmaciaId] ?? '—' }));
 
-        const semAtencao = farmacias
-          .filter(f => tasks.filter(t => t.farmaciaId === f.id && t.status !== 'done').length === 0)
-          .map(f => f.nomeFarmacia)
-          .slice(0, 5);
-
-        const ago30 = new Date(today); ago30.setDate(ago30.getDate() - 30);
-        const comReuniao30d = new Set(
-          reunioes.filter(r => {
-            const rd = new Date(r.data + 'T12:00:00');
-            return rd >= ago30 && rd <= new Date();
-          }).map(r => r.farmaciaId)
-        );
-        const semReuniao30d = farmacias
-          .filter(f => !comReuniao30d.has(f.id))
-          .map(f => f.nomeFarmacia)
-          .slice(0, 5);
-
-        setData({ totalFarmacias: farmacias.length, overdueTotal, pendingTotal, doneTotal, reuniaoHoje, farmaciasRows, urgentTasks, nextMeetings, semAtencao, semReuniao30d });
+        setData({
+          totalFarmacias: farmacias.length,
+          overdueTotal,
+          pendingTotal,
+          doneTotal,
+          reuniaoHoje,
+          farmaciasRows,
+          timelineTasks,
+          nextMeetings
+        });
       } catch (e) {
         console.error('Erro no Dashboard:', e);
       } finally {
@@ -224,106 +245,127 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-12">
-        {/* Radar de Monitoramento */}
-        <div className="lg:col-span-8 glass-card overflow-hidden">
+        {/* Radar de Monitoramento - Agora Menor */}
+        <div className="lg:col-span-4 glass-card overflow-hidden h-fit">
           <SectionHeader
             icon={Activity} color="text-primary"
-            title="Radar de Performance" sub="Status atual por unidade"
-            action="Gerenciar" actionHref="/farmacias"
+            title="Radar" sub="Performance por unidade"
+            action="Ver rede" actionHref="/farmacias"
           />
 
-          <div className="divide-y divide-black/[0.03] dark:divide-white/[0.03]">
-            {data.farmaciasRows.map(f => {
+          <div className="divide-y divide-black/[0.03] dark:divide-white/[0.03] max-h-[400px] overflow-y-auto">
+            {data.farmaciasRows.slice(0, 8).map(f => {
               const pct = f.totalTasks > 0 ? Math.round((f.doneTasks / f.totalTasks) * 100) : 0;
               const hasAlert = f.overdueTasks > 0;
 
               return (
-                <Link key={f.id} href={`/farmacias/${f.id}`} className="flex items-center gap-6 px-8 py-4 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors group">
+                <Link key={f.id} href={`/farmacias/${f.id}`} className="flex items-center gap-4 px-6 py-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors group">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-[14px] font-bold tracking-tight truncate">{f.nomeFarmacia}</span>
-                      {hasAlert && (
-                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 uppercase">
-                          Alerta
-                        </span>
-                      )}
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-[14px] font-bold tracking-tight truncate text-foreground group-hover:text-blue-500 transition-colors uppercase">{f.nomeFarmacia}</span>
+                      {hasAlert && <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]" />}
                     </div>
                     <div className="flex items-center gap-4">
-                      <div className="flex-1 h-1 bg-black/[0.03] dark:bg-white/[0.05] rounded-full overflow-hidden">
-                        <div className={cn('h-full rounded-full transition-all duration-1000', hasAlert ? 'bg-red-500' : 'bg-primary')} style={{ width: `${pct}%` }} />
+                      <div className="flex-1 h-1.5 bg-black/[0.05] dark:bg-white/[0.1] rounded-full overflow-hidden">
+                        <div className={cn('h-full rounded-full transition-all duration-1000', hasAlert ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.3)]' : 'bg-primary')} style={{ width: `${pct}%` }} />
                       </div>
-                      <span className="text-[10px] font-bold text-foreground/40 tabular-nums">{pct}%</span>
+                      <span className="text-[11px] font-black text-foreground-tertiary tabular-nums">{pct}%</span>
                     </div>
                   </div>
-                  <ChevronRight className="h-4 w-4 opacity-10 group-hover:opacity-100 transition-opacity" />
                 </Link>
               )
             })}
           </div>
         </div>
 
-        {/* Alta Prioridade */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="glass-card overflow-hidden">
-            <SectionHeader icon={Zap} color="text-amber-500" title="Alta Prioridade" sub="Urgências" action="Ver Tudo" actionHref="/tarefas" />
-            <div className="p-4 space-y-1">
-              {data.urgentTasks.length === 0 ? (
-                <p className="py-8 text-center text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Tudo em ordem</p>
-              ) : (
-                data.urgentTasks.map(t => (
-                  <Link key={t.id} href="/tarefas" className="flex items-center gap-3 p-3 rounded-xl hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors group">
-                    <div className={cn('w-1.5 h-1.5 rounded-full', new Date(t.vencimento!) < today ? 'bg-red-500' : 'bg-amber-500')} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-bold truncate group-hover:text-primary transition-colors">{t.titulo}</p>
-                      <p className="text-[9px] font-medium text-foreground/30 truncate">{t.farmaciaNome}</p>
-                    </div>
-                    <span className="text-[10px] font-bold text-foreground/30">{relativeDay(t.vencimento!)}</span>
-                  </Link>
-                ))
-              )}
-            </div>
-          </div>
-
-          <div className="glass-card overflow-hidden">
-            <SectionHeader icon={Calendar} color="text-indigo-500" title="Próximas Reuniões" sub="Agenda curta" action="Calendário" actionHref="/reunioes" />
-            <div className="p-4 space-y-2">
-              {data.nextMeetings.map(m => (
-                <div key={m.id} className="flex items-center gap-3 p-3 rounded-xl bg-black/[0.01] dark:bg-white/[0.01] border border-black/[0.02] dark:border-white/[0.02]">
-                  <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/5 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center shrink-0">
-                    <span className="text-[14px] font-bold leading-none">{new Date(m.data + 'T12:00:00').getDate()}</span>
-                    <span className="text-[8px] font-bold uppercase opacity-30">{new Date(m.data + 'T12:00:00').toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>
+        {/* Reuniões */}
+        <div className="lg:col-span-8 glass-card overflow-hidden">
+          <SectionHeader icon={Calendar} color="text-indigo-500" title="Próximas Reuniões" sub="Agenda confirmada" action="Agenda Completa" actionHref="/reunioes" />
+          <div className="p-6 grid gap-4 grid-cols-1 md:grid-cols-2">
+            {data.nextMeetings.length === 0 ? (
+              <div className="col-span-2 py-10 text-center text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Nenhuma reunião agendada</div>
+            ) : (
+              data.nextMeetings.map(m => (
+                <div key={m.id} className="flex items-center gap-4 p-4 rounded-2xl bg-black/[0.01] dark:bg-white/[0.02] border border-black/[0.03] dark:border-white/[0.05] hover:border-blue-500/20 transition-all group">
+                  <div className="w-14 h-14 rounded-2xl bg-white dark:bg-white/5 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-all group-hover:shadow-md">
+                    <span className="text-[18px] font-black leading-none text-foreground">{new Date(m.data + 'T12:00:00').getDate()}</span>
+                    <span className="text-[10px] font-black uppercase text-foreground-tertiary">{new Date(m.data + 'T12:00:00').toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-bold truncate">{m.pauta || 'Alinhamento'}</p>
-                    <p className="text-[9px] font-medium text-foreground/30 truncate">{m.farmaciaNome}</p>
+                    <p className="text-[14px] font-black truncate group-hover:text-blue-500 transition-colors uppercase tracking-tight text-foreground">{m.pauta || 'Alinhamento'}</p>
+                    <p className="text-[11px] font-bold text-foreground-tertiary truncate flex items-center gap-1.5 mt-1">
+                      <Store className="h-3.5 w-3.5" />
+                      {m.farmaciaNome}
+                    </p>
                   </div>
                 </div>
-              ))}
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* NOVA SEÇÃO: LINHA DO TEMPO DE TAREFAS */}
+        <div className="lg:col-span-12 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                <ClipboardList className="h-4 w-4 text-blue-500" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-widest">Linha do Tempo de Tarefas</h3>
+                <p className="text-[10px] font-medium text-foreground/30">O que você precisa realizar hoje e nos próximos dias</p>
+              </div>
             </div>
+            <Link href="/tarefas" className="text-[10px] font-bold text-primary hover:underline tracking-widest uppercase">Ver Kanban</Link>
+          </div>
+
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+            {/* Coluna 1: Atrasadas */}
+            <TaskTimelineColumn title="Atrasadas" icon={AlertCircle} color="text-red-500" tasks={data.timelineTasks.overdue} />
+            {/* Coluna 2: Hoje */}
+            <TaskTimelineColumn title="Hoje" icon={Target} color="text-blue-500" tasks={data.timelineTasks.today} />
+            {/* Coluna 3: Amanhã */}
+            <TaskTimelineColumn title="Amanhã" icon={Clock} color="text-amber-500" tasks={data.timelineTasks.tomorrow} />
+            {/* Coluna 4: Próximas */}
+            <TaskTimelineColumn title="Próximas" icon={Calendar} color="text-indigo-500" tasks={data.timelineTasks.upcoming} />
           </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Insights */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="glass-card p-8">
-          <h3 className="text-sm font-bold tracking-tight mb-2">Oportunidades de Foco</h3>
-          <p className="text-[12px] text-foreground/40 leading-relaxed mb-6">Unidades sem tarefas pendentes. Ótimo momento para propor novas estratégias:</p>
-          <div className="flex flex-wrap gap-2">
-            {data.semAtencao.map(nome => (
-              <span key={nome} className="px-3 py-1.5 rounded-lg bg-primary/5 text-primary text-[10px] font-bold uppercase tracking-wider">{nome}</span>
-            ))}
-          </div>
+function TaskTimelineColumn({ title, icon: Icon, color, tasks }: { title: string, icon: any, color: string, tasks: (Tarefa & { farmaciaNome: string })[] }) {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between px-2">
+        <div className="flex items-center gap-2">
+          <Icon className={cn("h-4 w-4", color)} />
+          <span className="text-[11px] font-black uppercase tracking-[0.16em] text-foreground-tertiary">{title}</span>
         </div>
-        <div className="glass-card p-8">
-          <h3 className="text-sm font-bold tracking-tight mb-2">Manutenção de Relação</h3>
-          <p className="text-[12px] text-foreground/40 leading-relaxed mb-6">Nenhum contato formal nos últimos 30 dias nestas unidades:</p>
-          <div className="flex flex-wrap gap-2">
-            {data.semReuniao30d.map(nome => (
-              <span key={nome} className="px-3 py-1.5 rounded-lg bg-amber-500/5 text-amber-500 text-[10px] font-bold uppercase tracking-wider">{nome}</span>
-            ))}
+        <span className="text-[11px] font-black tabular-nums px-2 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.1] text-foreground-tertiary">{tasks.length}</span>
+      </div>
+
+      <div className="space-y-3">
+        {tasks.length === 0 ? (
+          <div className="py-10 text-center border border-dashed border-black/[0.08] dark:border-white/[0.1] rounded-2xl">
+            <p className="text-[10px] font-black text-foreground-quaternary uppercase tracking-widest">Vazio</p>
           </div>
-        </div>
+        ) : (
+          tasks.slice(0, 5).map(t => (
+            <Link key={t.id} href={`/farmacias/${t.farmaciaId}?tab=tarefas`} className="block group">
+              <div className="glass-card p-4 hover:border-blue-500/40 transition-all hover:-translate-y-1 hover:shadow-lg dark:hover:bg-white/[0.05]">
+                <p className="text-[14px] font-bold text-foreground group-hover:text-blue-500 transition-colors leading-snug mb-1.5">{t.titulo}</p>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[10px] font-black text-foreground-tertiary truncate flex-1 uppercase tracking-wider">{t.farmaciaNome}</span>
+                  {t.vencimento && (
+                    <span className="text-[10px] font-black tabular-nums text-foreground-quaternary">{new Date(t.vencimento.split('T')[0] + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</span>
+                  )}
+                </div>
+              </div>
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );
