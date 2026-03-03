@@ -3,66 +3,78 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ═══════════════════════════════════════════════════════
-   DESIGN SYSTEM — Apple Minimalist Evolution
-   Inspiração: macOS Sequoia & iOS 18
+   DESIGN SYSTEM — Refined & Delicate SaaS
+   Focus: Softness, Legibility, and Premium Minimalism
    ═══════════════════════════════════════════════════════ */
 
 :root {
   color-scheme: light;
 
-  /* Softer Light Palette - Clean and Comfortable */
-  --background: #FAFAFB;
+  /* Estilo Apple - Light Mode */
+  --background: #F5F5F7;
+  /* Fundo principal agrupado */
   --background-raised: #FFFFFF;
-
-  /* Typography - Softer than pure black for less eye strain */
-  --foreground: #111827;
-  --foreground-secondary: #4B5563;
-  --foreground-tertiary: #6B7280;
-  --foreground-quaternary: #9CA3AF;
-
-  /* Surfaces */
   --card: #FFFFFF;
-  --card-foreground: #111827;
-  --surface: rgba(255, 255, 255, 0.9);
 
-  /* Borders & Accents - More subtle */
-  --border: rgba(0, 0, 0, 0.05);
-  --border-focus: #3B82F6;
-  --primary: #2563EB;
-  --primary-hover: #1D4ED8;
+  /* Typography - Clean & Soft */
+  --foreground: #1D1D1F;
+  --foreground-secondary: #515154;
+  /* Mais legível sem ser preto */
+  --foreground-tertiary: #86868B;
+  --foreground-quaternary: #A1A1A6;
+
+  /* Brand Accents */
+  --primary: #007AFF;
+  /* Azul clássico iOS para botões/links */
+  --primary-hover: #0066CC;
   --primary-foreground: #FFFFFF;
 
-  --separator: rgba(0, 0, 0, 0.06);
-  --grid-pattern: rgba(0, 0, 0, 0.03);
+  --success: #34C759;
+  --warning: #FF9500;
+  --danger: #FF3B30;
+
+  /* System Elements */
+  --border: rgba(60, 60, 67, 0.08);
+  /* Borda oficial suave */
+  --border-focus: rgba(0, 122, 255, 0.3);
+  --separator: rgba(60, 60, 67, 0.1);
+  --grid-pattern: rgba(0, 0, 0, 0.02);
 }
 
 [class~='dark'] {
   color-scheme: dark;
 
-  /* Deep Charcoal Palette - Not pure black for better comfort */
-  --background: #0D0E12;
-  --background-raised: #16171D;
+  /* Estilo Apple - Dark Mode */
+  --background: #000000;
+  /* Fundo puro (OLED) */
+  --background-raised: #1C1C1E;
+  --card: #1C1C1E;
+  /* Cartão levantado */
 
-  /* Typography - Softer whites for dark mode */
-  --foreground: #F3F4F6;
-  --foreground-secondary: #D1D5DB;
-  --foreground-tertiary: #9CA3AF;
-  --foreground-quaternary: #6B7280;
+  /* Typography - Sem cansar os olhos */
+  --foreground: #F5F5F7;
+  --foreground-secondary: #EBEBF599;
+  /* 60% opacidade do iOS */
+  --foreground-tertiary: #EBEBF54D;
+  /* 30% opacidade do iOS */
+  --foreground-quaternary: #3A3A3C;
 
-  /* Surfaces Glass */
-  --card: #16171D;
-  --card-foreground: #F3F4F6;
-  --surface: rgba(22, 23, 29, 0.8);
-
-  /* Borders & Accents */
-  --border: rgba(255, 255, 255, 0.08);
-  --border-focus: #3B82F6;
-  --primary: #3B82F6;
-  --primary-hover: #60A5FA;
+  /* Brand Accents */
+  --primary: #0A84FF;
+  /* Azul escuro oficial iOS */
+  --primary-hover: #409CFF;
   --primary-foreground: #FFFFFF;
 
-  --separator: rgba(255, 255, 255, 0.08);
-  --grid-pattern: rgba(255, 255, 255, 0.03);
+  --success: #32D74B;
+  --warning: #FF9F0A;
+  --danger: #FF453A;
+
+  /* System Elements */
+  --border: rgba(84, 84, 88, 0.35);
+  /* Borda padrão escuro */
+  --border-focus: rgba(10, 132, 255, 0.4);
+  --separator: rgba(84, 84, 88, 0.35);
+  --grid-pattern: rgba(255, 255, 255, 0.02);
 }
 
 @theme inline {
@@ -72,13 +84,17 @@
   --color-foreground-tertiary: var(--foreground-tertiary);
   --color-foreground-quaternary: var(--foreground-quaternary);
   --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
+  --color-card-foreground: var(--foreground);
   --color-border: var(--border);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
 
-  --radius-4xl: 2.5rem;
-  --radius-5xl: 3rem;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -88,27 +104,21 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  transition: background-color 0.5s ease;
+  font-family: var(--font-open-sans), 'Open Sans', sans-serif;
+  transition: background-color 0.4s ease;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  /* SaaS style text size */
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 h1,
 h2,
 h3,
 h4 {
-  letter-spacing: -0.03em;
-  font-weight: 750;
-  /* Slightly bolder for SaaS look */
-}
-
-.tabular-nums {
-  font-family: var(--font-geist-mono), monospace;
-  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: var(--foreground);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -119,89 +129,63 @@ h4 {
   @apply transition-all duration-300;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.01);
 }
 
 .dark .glass-card {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: var(--card);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
+  /* Em modo escuro Apple o contraste vem da linha da borda e não de sombra */
 }
 
 .glass-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
-  border-color: var(--border-focus);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .dark .glass-card:hover {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  /* Um contorno subitil no hover escuro */
 }
 
-/* Premium Button */
-.btn-premium {
-  @apply flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-semibold transition-all duration-200 active:scale-95;
-  background: var(--primary);
-  color: white;
-}
-
-.btn-premium:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
-}
-
-/* Sidebar Nav Item */
+/* Sidebar Nav */
 .nav-item {
-  @apply flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200;
-  color: var(--foreground-3);
+  @apply flex items-center gap-4 px-6 py-3.5 rounded-2xl font-semibold transition-all duration-200;
+  color: var(--foreground-tertiary);
+  font-size: 13.5px;
 }
 
 .nav-item:hover {
   color: var(--foreground);
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .dark .nav-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .nav-item-active {
-  @apply bg-white shadow-sm font-bold;
+  @apply bg-primary/10;
   color: var(--primary) !important;
-  border: 1px solid rgba(0, 0, 0, 0.02);
-}
-
-.dark .nav-item-active {
-  background: rgba(255, 255, 255, 0.1);
-  color: white !important;
-  border-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--foreground-quaternary);
   border-radius: 10px;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* Layout Animation */
 .page-transition {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(4px);
   }
 
   to {

@@ -25,6 +25,7 @@ export default function Topbar() {
     const { theme, toggleTheme } = useTheme();
     const [scrolled, setScrolled] = useState(false);
     const { open: searchOpen, setOpen: setSearchOpen } = useSearchModal();
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 12);
@@ -37,57 +38,85 @@ export default function Topbar() {
     return (
         <>
             <header className={cn(
-                'fixed top-0 left-72 right-0 z-30 transition-all duration-300 py-6 px-10',
-                scrolled && 'bg-background/80 backdrop-blur-xl border-b border-black/5 dark:border-white/5 py-4'
+                'fixed top-0 left-72 right-0 z-30 transition-all duration-300 px-12 border-b border-transparent',
+                scrolled && 'bg-background/80 backdrop-blur-md border-border py-2'
             )}>
-                <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+                <div className="max-w-[1600px] mx-auto flex items-center justify-between h-20">
 
-                    {/* Breadcrumbs - Extremely clean */}
-                    <div className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-foreground-tertiary">
-                        <Home className="h-4 w-4 opacity-50" />
-                        <span>/</span>
-                        <span className="text-foreground">{currentLink?.label || 'Início'}</span>
+                    {/* Breadcrumbs - Apple Style */}
+                    <div className="flex items-center gap-2 text-[13px] font-medium text-foreground-secondary">
+                        <Home className="h-4 w-4 opacity-70" />
+                        <span className="opacity-30">/</span>
+                        <span>{currentLink?.label || 'Início'}</span>
                     </div>
 
                     <div className="flex items-center gap-6">
 
-                        {/* Seletor Ultra Minimal */}
-                        <div className="flex items-center gap-2 group cursor-pointer pr-4 border-r border-black/5 dark:border-white/5">
-                            <div className="w-2 h-2 rounded-full bg-primary" />
-                            <select
-                                value={selectedFarmaciaId}
-                                onChange={e => setSelectedFarmaciaId(e.target.value)}
-                                className="appearance-none bg-transparent border-none outline-none text-[13px] font-black uppercase tracking-widest cursor-pointer focus:ring-0 py-1 text-foreground"
+                        {/* Seletor Minimalista Customizado (Estilo Apple) */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                className="flex items-center gap-2.5 bg-card border border-border px-3.5 py-2 rounded-[12px] group cursor-pointer hover:border-primary/40 transition-all shadow-sm active:scale-95"
                             >
-                                <option value="global" className="bg-white dark:bg-black">Rede Global</option>
-                                {farmacias.map(f => (
-                                    <option key={f.id} value={f.id} className="bg-white dark:bg-black">{f.nomeFarmacia}</option>
-                                ))}
-                            </select>
-                            <ChevronDown className="h-3 w-3 opacity-20" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-success ring-2 ring-success/20" />
+                                <span className="text-[13px] font-semibold text-foreground">
+                                    {selectedFarmaciaId === 'global' ? 'Rede Global' : farmacias.find(f => f.id === selectedFarmaciaId)?.nomeFarmacia}
+                                </span>
+                                <ChevronDown className={cn("h-4 w-4 opacity-40 transition-transform duration-200", isDropdownOpen && "rotate-180")} />
+                            </button>
+
+                            {isDropdownOpen && (
+                                <>
+                                    <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)} />
+                                    <div className="absolute top-full mt-2 left-0 min-w-[200px] py-1 bg-card border border-border rounded-xl shadow-2xl z-50 animate-in fade-in zoom-in duration-200 origin-top">
+                                        <button
+                                            onClick={() => { setSelectedFarmaciaId('global'); setIsDropdownOpen(false); }}
+                                            className={cn(
+                                                "w-full text-left px-4 py-2.5 text-[13px] font-medium transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.05]",
+                                                selectedFarmaciaId === 'global' ? "text-primary" : "text-foreground"
+                                            )}
+                                        >
+                                            Rede Global
+                                        </button>
+                                        <div className="h-px bg-border/40 mx-2 my-1" />
+                                        <div className="max-h-[300px] overflow-y-auto">
+                                            {farmacias.map(f => (
+                                                <button
+                                                    key={f.id}
+                                                    onClick={() => { setSelectedFarmaciaId(f.id); setIsDropdownOpen(false); }}
+                                                    className={cn(
+                                                        "w-full text-left px-4 py-2.5 text-[13px] font-medium transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.05]",
+                                                        selectedFarmaciaId === f.id ? "text-primary" : "text-foreground"
+                                                    )}
+                                                >
+                                                    {f.nomeFarmacia}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
 
-                        {/* Ações Rápidas */}
+                        {/* System Actions */}
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setSearchOpen(true)}
-                                className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-90"
+                                className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-black/[0.03] dark:hover:bg-white/5 transition-all active:scale-90"
                             >
-                                <Search className="h-4.5 w-4.5 opacity-40" />
+                                <Search className="h-4 w-4 text-foreground-secondary" />
                             </button>
 
                             <button
                                 onClick={toggleTheme}
-                                className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-90"
+                                className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-black/[0.03] dark:hover:bg-white/5 transition-all active:scale-90"
                             >
                                 {theme === 'light'
-                                    ? <Moon className="h-4.5 w-4.5 opacity-40" />
-                                    : <Sun className="h-4.5 w-4.5 text-amber-500" />
+                                    ? <Moon className="h-4 w-4 text-foreground-secondary" />
+                                    : <Sun className="h-4 w-4 text-amber-400" />
                                 }
                             </button>
                         </div>
-
-
                     </div>
                 </div>
             </header>

@@ -65,42 +65,47 @@ function StatCard({ label, value, sub, icon: Icon, color, href }: {
   icon: any; color: string; href?: string;
 }) {
   const inner = (
-    <div className="glass-card p-6 flex flex-col justify-between min-h-[140px] group">
-      <div className="flex items-center justify-between mb-4">
+    <div className="glass-card flex flex-col justify-between p-6 group h-full">
+      <div className="flex items-start justify-between mb-4">
         <div className={cn(
           'w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300',
-          'bg-black/[0.03] dark:bg-white/[0.05] group-hover:scale-110 group-hover:bg-primary/10'
+          'bg-primary/10'
         )}>
-          <Icon className={cn('h-5 w-5', color.replace('bg-', 'text-'))} />
+          <Icon className={cn('h-5 w-5 text-primary')} />
         </div>
-        {href && <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all text-primary translate-x-[-4px] group-hover:translate-x-0" />}
       </div>
       <div>
-        <p className="text-[11px] font-black uppercase tracking-[0.16em] text-foreground-tertiary mb-2">{label}</p>
-        <div className="flex items-baseline gap-2">
-          <h4 className="text-3xl font-bold tracking-tight tabular-nums text-foreground">{value}</h4>
-          {sub && <span className="text-[11px] font-bold text-foreground-quaternary">{sub}</span>}
+        <h4 className="text-3xl font-semibold tracking-tight text-foreground mb-1">{value}</h4>
+        <div className="flex items-center gap-2">
+          <p className="text-[14px] font-medium text-foreground-secondary">{label}</p>
+          {sub && <span className="text-[12px] font-medium text-foreground-tertiary">{sub}</span>}
         </div>
       </div>
     </div>
   );
-  return href ? <Link href={href}>{inner}</Link> : inner;
+  return href ? <Link href={href} className="block">{inner}</Link> : inner;
 }
 
 function SectionHeader({ icon: Icon, color, title, sub, action, actionHref }: {
-  icon: any; color: string; title: string; sub?: string; action?: string; actionHref?: string;
+  icon: any; color: string; title: string; sub?: string;
+  action?: string; actionHref?: string;
 }) {
   return (
-    <div className="px-8 py-5 border-b border-black/[0.03] dark:border-white/[0.03] flex items-center justify-between">
+    <div className="flex items-center justify-between p-6 border-b border-border/40 mb-2">
       <div className="flex items-center gap-3">
-        <Icon className={cn('h-5 w-5 opacity-40', color)} />
-        <div>
-          <h3 className="text-[13px] font-black uppercase tracking-[0.18em] text-foreground">{title}</h3>
-          {sub && <p className="text-[11px] font-bold text-foreground-tertiary mt-1">{sub}</p>}
+        <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center bg-primary/10')}>
+          <Icon className={cn('h-4.5 w-4.5 text-primary')} />
+        </div>
+        <div className="flex flex-col">
+          <h3 className="text-[16px] font-semibold tracking-tight text-foreground">{title}</h3>
+          {sub && <p className="text-[12px] font-medium text-foreground-tertiary">{sub}</p>}
         </div>
       </div>
       {action && actionHref && (
-        <Link href={actionHref} className="text-[10px] font-bold text-primary hover:underline tracking-widest uppercase">
+        <Link
+          href={actionHref}
+          className="text-[12px] font-medium text-primary hover:text-primary-hover transition-colors"
+        >
           {action}
         </Link>
       )}
@@ -228,24 +233,24 @@ export default function Dashboard() {
     <div className="space-y-10 page-transition">
 
       {/* Header - Apple Style */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold tracking-tight">{greet}.</h1>
-        <p className="text-[13px] font-medium text-foreground/40">
+      <div className="flex flex-col gap-1 mb-6">
+        <h2 className="text-[34px] font-bold tracking-tight text-foreground leading-tight">Visão Geral</h2>
+        <p className="text-[15px] font-medium text-foreground-secondary opacity-80">
           {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
         </p>
       </div>
 
-      {/* KPIs Grid */}
-      <div className="grid gap-4 grid-cols-2 md:grid-cols-5">
-        <StatCard label="Unidades" value={data.totalFarmacias} icon={Store} color="text-primary" href="/farmacias" />
-        <StatCard label="Atrasadas" value={data.overdueTotal} icon={AlertTriangle} color="text-red-500" href="/tarefas" />
-        <StatCard label="Pendentes" value={data.pendingTotal} icon={Clock} color="text-amber-500" href="/tarefas" />
-        <StatCard label="Concluídas" value={data.doneTotal} icon={CheckCircle2} color="text-emerald-500" href="/tarefas" />
-        <StatCard label="Reuniões Hoje" value={data.reuniaoHoje} icon={Calendar} color="text-indigo-500" href="/reunioes" />
+      {/* KPIs Grid - Clean Spacing */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+        <StatCard label="Unidades ativas" value={data.totalFarmacias} icon={Store} color="text-primary" href="/farmacias" />
+        <StatCard label="Atrasadas" value={data.overdueTotal} icon={AlertTriangle} color="text-danger" />
+        <StatCard label="Pendentes" value={data.pendingTotal} icon={Clock} color="text-warning" />
+        <StatCard label="Concluídas" value={data.doneTotal} icon={CheckCircle2} color="text-success" />
+        <StatCard label="Reuniões hoje" value={data.reuniaoHoje} icon={Calendar} color="text-primary" href="/reunioes" />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-12">
-        {/* Radar de Monitoramento - Agora Menor */}
+      <div className="grid gap-10 lg:grid-cols-12">
+        {/* Radar de Monitoramento */}
         <div className="lg:col-span-4 glass-card overflow-hidden h-fit">
           <SectionHeader
             icon={Activity} color="text-primary"
@@ -253,7 +258,7 @@ export default function Dashboard() {
             action="Ver rede" actionHref="/farmacias"
           />
 
-          <div className="divide-y divide-black/[0.03] dark:divide-white/[0.03] max-h-[400px] overflow-y-auto">
+          <div className="divide-y divide-border/50 max-h-[400px] overflow-y-auto">
             {data.farmaciasRows.slice(0, 8).map(f => {
               const pct = f.totalTasks > 0 ? Math.round((f.doneTasks / f.totalTasks) * 100) : 0;
               const hasAlert = f.overdueTasks > 0;
@@ -261,40 +266,44 @@ export default function Dashboard() {
               return (
                 <Link key={f.id} href={`/farmacias/${f.id}`} className="flex items-center gap-4 px-6 py-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors group">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[14px] font-bold tracking-tight truncate text-foreground group-hover:text-blue-500 transition-colors uppercase">{f.nomeFarmacia}</span>
-                      {hasAlert && <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]" />}
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1 h-1.5 bg-black/[0.05] dark:bg-white/[0.1] rounded-full overflow-hidden">
-                        <div className={cn('h-full rounded-full transition-all duration-1000', hasAlert ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.3)]' : 'bg-primary')} style={{ width: `${pct}%` }} />
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[14px] font-semibold tracking-tight truncate text-foreground group-hover:text-primary transition-colors">{f.nomeFarmacia}</span>
+                        {hasAlert && <div className="w-1.5 h-1.5 rounded-full bg-danger" />}
                       </div>
-                      <span className="text-[11px] font-black text-foreground-tertiary tabular-nums">{pct}%</span>
+                      <span className="text-[12px] font-medium text-foreground-secondary">{pct}%</span>
+                    </div>
+
+                    <div className="h-1.5 w-full bg-black/[0.04] dark:bg-white/[0.06] rounded-full overflow-hidden">
+                      <div
+                        className={cn("h-full transition-all duration-1000 ease-out rounded-full", hasAlert ? 'bg-danger' : 'bg-success')}
+                        style={{ width: `${pct}%` }}
+                      />
                     </div>
                   </div>
                 </Link>
-              )
+              );
             })}
           </div>
         </div>
 
         {/* Reuniões */}
         <div className="lg:col-span-8 glass-card overflow-hidden">
-          <SectionHeader icon={Calendar} color="text-indigo-500" title="Próximas Reuniões" sub="Agenda confirmada" action="Agenda Completa" actionHref="/reunioes" />
+          <SectionHeader icon={Calendar} color="text-primary" title="Próximas Reuniões" sub="Agenda confirmada" action="Agenda Completa" actionHref="/reunioes" />
           <div className="p-6 grid gap-4 grid-cols-1 md:grid-cols-2">
             {data.nextMeetings.length === 0 ? (
-              <div className="col-span-2 py-10 text-center text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Nenhuma reunião agendada</div>
+              <div className="col-span-2 py-10 text-center text-[13px] font-medium text-foreground-tertiary">Nenhuma reunião agendada</div>
             ) : (
               data.nextMeetings.map(m => (
-                <div key={m.id} className="flex items-center gap-4 p-4 rounded-2xl bg-black/[0.01] dark:bg-white/[0.02] border border-black/[0.03] dark:border-white/[0.05] hover:border-blue-500/20 transition-all group">
-                  <div className="w-14 h-14 rounded-2xl bg-white dark:bg-white/5 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-all group-hover:shadow-md">
-                    <span className="text-[18px] font-black leading-none text-foreground">{new Date(m.data + 'T12:00:00').getDate()}</span>
-                    <span className="text-[10px] font-black uppercase text-foreground-tertiary">{new Date(m.data + 'T12:00:00').toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>
+                <div key={m.id} className="flex items-center gap-4 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.02] border border-border/50 hover:border-primary/30 transition-all cursor-pointer group">
+                  <div className="w-14 h-14 rounded-xl bg-background border border-border/50 flex flex-col items-center justify-center shrink-0 shadow-sm transition-all">
+                    <span className="text-[20px] font-semibold leading-none text-foreground">{new Date(m.data + 'T12:00:00').getDate()}</span>
+                    <span className="text-[11px] font-medium text-foreground-tertiary uppercase mt-0.5">{new Date(m.data + 'T12:00:00').toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-black truncate group-hover:text-blue-500 transition-colors uppercase tracking-tight text-foreground">{m.pauta || 'Alinhamento'}</p>
-                    <p className="text-[11px] font-bold text-foreground-tertiary truncate flex items-center gap-1.5 mt-1">
-                      <Store className="h-3.5 w-3.5" />
+                    <p className="text-[15px] font-semibold truncate group-hover:text-primary transition-colors text-foreground">{m.pauta || 'Alinhamento'}</p>
+                    <p className="text-[13px] font-medium text-foreground-tertiary truncate flex items-center gap-1.5 mt-1">
+                      <Store className="h-3.5 w-3.5 opacity-60" />
                       {m.farmaciaNome}
                     </p>
                   </div>
@@ -305,29 +314,26 @@ export default function Dashboard() {
         </div>
 
         {/* NOVA SEÇÃO: LINHA DO TEMPO DE TAREFAS */}
-        <div className="lg:col-span-12 space-y-4">
-          <div className="flex items-center justify-between">
+        <div className="lg:col-span-12 space-y-6 mt-8">
+          <div className="flex items-center justify-between pb-4 border-b border-border/40">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <ClipboardList className="h-4 w-4 text-blue-500" />
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <ClipboardList className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-widest">Linha do Tempo de Tarefas</h3>
-                <p className="text-[10px] font-medium text-foreground/30">O que você precisa realizar hoje e nos próximos dias</p>
+                <h3 className="text-[18px] font-semibold tracking-tight text-foreground">Linha do Tempo de Tarefas</h3>
+                <p className="text-[13px] font-medium text-foreground-tertiary">O que você precisa realizar hoje e nos próximos dias</p>
               </div>
             </div>
-            <Link href="/tarefas" className="text-[10px] font-bold text-primary hover:underline tracking-widest uppercase">Ver Kanban</Link>
+            <Link href="/tarefas" className="text-[13px] font-medium text-primary hover:text-primary-hover transition-colors">Ver Kanban</Link>
           </div>
 
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-            {/* Coluna 1: Atrasadas */}
-            <TaskTimelineColumn title="Atrasadas" icon={AlertCircle} color="text-red-500" tasks={data.timelineTasks.overdue} />
-            {/* Coluna 2: Hoje */}
-            <TaskTimelineColumn title="Hoje" icon={Target} color="text-blue-500" tasks={data.timelineTasks.today} />
-            {/* Coluna 3: Amanhã */}
-            <TaskTimelineColumn title="Amanhã" icon={Clock} color="text-amber-500" tasks={data.timelineTasks.tomorrow} />
-            {/* Coluna 4: Próximas */}
-            <TaskTimelineColumn title="Próximas" icon={Calendar} color="text-indigo-500" tasks={data.timelineTasks.upcoming} />
+            {/* Colunas */}
+            <TaskTimelineColumn title="Atrasadas" icon={AlertCircle} color="text-danger" tasks={data.timelineTasks.overdue} />
+            <TaskTimelineColumn title="Hoje" icon={Target} color="text-primary" tasks={data.timelineTasks.today} />
+            <TaskTimelineColumn title="Amanhã" icon={Clock} color="text-warning" tasks={data.timelineTasks.tomorrow} />
+            <TaskTimelineColumn title="Próximas" icon={Calendar} color="text-foreground-tertiary" tasks={data.timelineTasks.upcoming} />
           </div>
         </div>
       </div>
@@ -337,29 +343,29 @@ export default function Dashboard() {
 
 function TaskTimelineColumn({ title, icon: Icon, color, tasks }: { title: string, icon: any, color: string, tasks: (Tarefa & { farmaciaNome: string })[] }) {
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between px-2">
+    <div className="space-y-4">
+      <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
           <Icon className={cn("h-4 w-4", color)} />
-          <span className="text-[11px] font-black uppercase tracking-[0.16em] text-foreground-tertiary">{title}</span>
+          <span className="text-[13px] font-semibold text-foreground-secondary">{title}</span>
         </div>
-        <span className="text-[11px] font-black tabular-nums px-2 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.1] text-foreground-tertiary">{tasks.length}</span>
+        <span className="text-[12px] font-semibold tabular-nums px-2.5 py-0.5 rounded-md bg-black/[0.03] dark:bg-white/[0.05] text-foreground-secondary">{tasks.length}</span>
       </div>
 
       <div className="space-y-3">
         {tasks.length === 0 ? (
-          <div className="py-10 text-center border border-dashed border-black/[0.08] dark:border-white/[0.1] rounded-2xl">
-            <p className="text-[10px] font-black text-foreground-quaternary uppercase tracking-widest">Vazio</p>
+          <div className="py-12 text-center border-2 border-dashed border-border/50 rounded-[20px] bg-black/[0.01] dark:bg-white/[0.01]">
+            <p className="text-[13px] font-medium text-foreground-quaternary">Nenhuma tarefa</p>
           </div>
         ) : (
           tasks.slice(0, 5).map(t => (
             <Link key={t.id} href={`/farmacias/${t.farmaciaId}?tab=tarefas`} className="block group">
-              <div className="glass-card p-4 hover:border-blue-500/40 transition-all hover:-translate-y-1 hover:shadow-lg dark:hover:bg-white/[0.05]">
-                <p className="text-[14px] font-bold text-foreground group-hover:text-blue-500 transition-colors leading-snug mb-1.5">{t.titulo}</p>
+              <div className="glass-card p-5 hover:border-border-focus transition-all hover:scale-[1.02] active:scale-[0.98]">
+                <p className="text-[15px] font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-2">{t.titulo}</p>
                 <div className="flex items-center justify-between gap-3">
-                  <span className="text-[10px] font-black text-foreground-tertiary truncate flex-1 uppercase tracking-wider">{t.farmaciaNome}</span>
+                  <span className="text-[12px] font-medium text-foreground-tertiary truncate flex-1">{t.farmaciaNome}</span>
                   {t.vencimento && (
-                    <span className="text-[10px] font-black tabular-nums text-foreground-quaternary">{new Date(t.vencimento.split('T')[0] + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</span>
+                    <span className="text-[12px] font-medium text-foreground-secondary tabular-nums">{new Date(t.vencimento.split('T')[0] + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</span>
                   )}
                 </div>
               </div>

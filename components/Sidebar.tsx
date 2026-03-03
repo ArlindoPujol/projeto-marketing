@@ -17,22 +17,22 @@ export default function Sidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="fixed left-0 top-0 bottom-0 w-72 flex flex-col bg-background/80 backdrop-blur-2xl border-r border-black/5 dark:border-white/10 z-40 transition-all duration-300">
-            {/* Logo area - More Apple-like */}
-            <div className="h-24 flex items-center px-8">
-                <div className="flex items-center gap-3 group cursor-pointer">
-                    <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 transition-transform group-hover:scale-105">
-                        <Store className="text-white h-6 w-6" />
+        <aside className="fixed left-0 top-0 bottom-0 w-72 flex flex-col bg-card border-r border-border z-40 transition-all duration-300">
+            {/* Logo area - Apple Refined */}
+            <div className="h-32 flex items-center px-8 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md shadow-primary/20">
+                        <Store className="text-white h-5 w-5" />
                     </div>
                     <div>
-                        <span className="text-xl font-black tracking-tight block leading-none text-foreground">Farmácia10x</span>
+                        <span className="text-[20px] font-semibold tracking-tight leading-none text-foreground">Farmácia10x</span>
                     </div>
                 </div>
             </div>
 
-            <nav className="flex-1 py-6 px-4 space-y-1">
-                <div className="px-4 mb-5">
-                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground-tertiary">Menu Principal</span>
+            <nav className="flex-1 py-8 px-5 space-y-1.5">
+                <div className="px-4 mb-4">
+                    <span className="text-[12px] font-semibold text-foreground-tertiary">Menu Principal</span>
                 </div>
 
                 {links.map((link) => {
@@ -42,30 +42,27 @@ export default function Sidebar() {
                             key={link.href}
                             href={link.href}
                             className={cn(
-                                "nav-item",
-                                isActive && "nav-item-active"
+                                "flex items-center gap-3 px-4 py-2.5 rounded-[12px] font-medium transition-all duration-200",
+                                isActive
+                                    ? "bg-black/5 dark:bg-white/10 text-foreground"
+                                    : "hover:bg-black/[0.03] dark:hover:bg-white/[0.04] text-foreground-secondary"
                             )}
                         >
                             <link.icon className={cn(
-                                "h-5 w-5 transition-transform",
-                                isActive ? "scale-110" : "opacity-70"
+                                "h-4.5 w-4.5 transition-transform",
+                                isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100 scale-95"
                             )} />
-                            <span className="tracking-tight">{link.label}</span>
+                            <span className="text-[14px]">{link.label}</span>
                         </Link>
                     );
                 })}
             </nav>
 
-            {/* Premium Footer - Minimalist */}
-            <div className="p-6 border-t border-black/5 dark:border-white/5">
-                <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.02]">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary/20 to-purple-500/20 flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-[11px] font-black tracking-widest text-foreground">V 1.2.0</span>
-                        <span className="text-[10px] font-bold text-foreground-secondary">Status: Estável</span>
-                    </div>
+            {/* System Status - Minimalist Apple */}
+            <div className="p-6 border-t border-border/40">
+                <div className="flex items-center gap-2.5 opacity-80 pl-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-success ring-2 ring-success/20" />
+                    <span className="text-[12px] font-medium text-foreground-secondary">V 1.2.0 · Live</span>
                 </div>
             </div>
         </aside>

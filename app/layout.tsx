@@ -1,10 +1,15 @@
 import type { Metadata } from 'next';
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
+import { Open_Sans } from 'next/font/google';
 import './globals.css';
 import AppLayout from '@/components/AppLayout';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
+
+const openSans = Open_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-open-sans',
+});
 
 export const metadata: Metadata = {
   title: 'Farmácia10x | Inteligência de Marketing',
@@ -17,11 +22,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning className={cn(GeistSans.variable, GeistMono.variable)}>
+    <html lang="pt-BR" suppressHydrationWarning className={openSans.variable}>
       <body className={cn(
-        GeistSans.className,
+        openSans.className,
         'antialiased transition-colors duration-500',
-        'selection:bg-blue-600/10 selection:text-blue-600 dark:selection:text-blue-400',
+        'selection:bg-[#27B5ED]/20 selection:text-[#27B5ED]',
       )}>
         <ThemeProvider>
           <AppLayout>{children}</AppLayout>
